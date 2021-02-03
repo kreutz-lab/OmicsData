@@ -100,6 +100,9 @@ time = nan(length(method),npat);
                     Imptemp = Imptemp(:,:,1:size(ImpM,3));
                 end
                 Imptemp(2,2); 
+                if any(any(isnan(Imptemp)))
+                    error([method{i} ' has imputed MVs.'])
+                end
                 if exist('mprev','var')
                     if any(strcmpi(method(i),mprev))
                         ImpM(:,:,:,strcmpi(method(i),mprev)) = Imptemp;
