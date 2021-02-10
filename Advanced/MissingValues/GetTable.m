@@ -43,6 +43,9 @@ end
 comp = get(O,'data_complete');                % Complete dataset without missing values, to compare "right" solution
 imp = get(O,'data_imput');           % Imputed data
 mis = get(O,'data_mis');
+if isempty(mis)
+	mis = get(O,'data');
+end
 
 method = get(O,'method_imput');
 
@@ -58,11 +61,15 @@ if ~isempty(imp)
         end
         for a=1:size(imp,4)  % for each imputation algorithm
             im = imp(:,:,p,a);
-            if ~all(isnan(im))
-                ndata = sum(sum(isnan(mis(:,:,p)) & ~isnan(comp))); % # data values which are compared here
+            if ~all(all(isnan(im)))
+                if size(mis,3)>1
+                            ndata = sum(sum(isnan(mis(:,:,p)) & ~isnan(comp))); % # data values which are compared here
+                else
+                            ndata = sum(sum(isnan(mis) & ~isnan(comp))); % # data values which are compared here
+                end
                 Diff = im-comp;
                 Dev(p,a) = sum(sum(abs(Diff),'omitnan'),'omitnan')/ndata;
-                RMSE(p,a) = sqrt(sum(sum(Diff.^2,'omitnan'),'omitnan'))/ndata; 
+                RMSE(p,a) = sqrt(sum(sum(Diff.^2,'omitnan'),'omitnan')/ndata); 
                 RSR(p,a) = RMSE(p,a)/std(comp(:),'omitnan');
                 [~,pF(p,a)] = vartest2(im(:),comp(:));
                 Acc(p,a) = length(find(abs(Diff./comp)<0.05))/size(O,1)/size(O,2)*100;
@@ -112,7 +119,11 @@ if ~isempty(imp)
     %    mu = mean(RMSE,2,'omitnan');
     %    [rank,rankidx] = sort(mu,2,'MissingPlacement','last'); 
     %end
-    M = [nanmean(Dev);nanmean(RMSE);nanmean(RSR);nanmean(pF);nanmean(Acc);nanmean(PCC)];
+    if p>1
+        M = [nanmean(Dev);nanmean(RMSE);nanmean(RSR);nanmean(pF);nanmean(Acc);nanmean(PCC)];
+    else
+        M = [Dev;RMSE;RSR;pF;Acc;PCC];
+    end
     RowNames = {'MeanError';'RMSE';'RSR';'pF';'Acc';'PCC'};
     if RMSEttest
         M = [M; nanmean(RMSEt)];

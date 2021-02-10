@@ -47,24 +47,11 @@ c = 0;
 % % mean to X
 m = mean(O,2,'omitnan');
 m = m*ones(1,size(isna,2)); 
-mnorm = (m-nanmean(m(:))) ./ nanstd(m(:));
 if ~isfield(out,'typenames') || any(strcmp(out.typenames,'mean'))
-    X = mnorm(:);
+    X = m(:);
     c=c+1;
     bnames{c} = 'mean';
     type(c) = 1; % mean-dependency
-end
-
-if exist('logflag','var') && logflag
- mnorm = (m-nanmin(m(:)))/(nanmax(m(:))-nanmin(m(:)))+1e-5;
- X = [X sqrt(mnorm(:))];
- c=c+1;
- bnames{c} = 'sqrt(mean)';
- type(c) = 1;
- X = [X mnorm(:).^2];
- c=c+1;
- bnames{c} = 'mean^2';
- type(c) = 1;
 end
 
 if bio
@@ -116,7 +103,7 @@ if bio
     end
 end
 
-%X = (X-mean(X,'omitnan')) ./ std(X,'omitnan');
+X = (X-mean(X,'omitnan')) ./ std(X,'omitnan');
 
 sX = size(X,2);
 % Col to X
