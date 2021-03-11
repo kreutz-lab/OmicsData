@@ -13,6 +13,8 @@ O = OmicsData('proteinGroups.txt');
 O = log2(O);
 image(O)
 ```
+An OmicsData object is created by `O = OmicsData(file);` where .txt, .xls, .xlsx, .csv and .mat files as well as a numeric input are accepted, e.g. the MaxQuant output tables can serve as file inputs here. 
+Example data can be found in OmicsData/TestData.
 
 ## Methods
 
