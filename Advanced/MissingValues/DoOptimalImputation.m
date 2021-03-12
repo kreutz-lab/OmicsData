@@ -36,11 +36,11 @@ O = OmicsFilter(O);
 dat_load = get(O,'data'); % for plotting
 
 %% Impute original dataset
-O = Imputation(O,algos{1});
+O = DoImputations(O,algos{1});
 if ~isfield(O,'data_imput') && length(algos)>1
-    O = Imputation(O,algos{2},[],true);
+    O = DoImputations(O,algos{2},[],true);
     if ~isfield(O,'data_imput')
-        O = Imputation(O,algos{3},[],true);
+        O = DoImputations(O,algos{3},[],true);
     end
 end
 if ~isfield(O,'data_imput')
@@ -60,7 +60,7 @@ sprintf(['Your dataset was imputed with ' algo{:} '\n'])
 path = get(O,'path');
 [folder,name] = fileparts(path);
 if writetxt
-    newname = [name '_Imp.txt'];
+    newname = [name '_DIMA_Imp.txt'];
     Owrite = O;
     Owrite = set(Owrite,'data',dat,['Imputed with ' algo ]);
     WriteData(Owrite,[folder filesep newname]);
@@ -95,7 +95,7 @@ if plt
     caxis([bottom top]);
     c=colorbar;
     c.Label.String = 'Log2(NormalizedRatios)';
-    print([folder '/' name '/' name '_Imputed'],'-dpng','-r50');
+    print([folder '/' name '/' name '_DIMA_Imputed'],'-dpng','-r50');
 
     %% Sort/plot (for #nans)
     [~,idx] = sort(sum(isnan(dat_load),2));
@@ -121,5 +121,5 @@ if plt
     caxis([bottom top]);
     c=colorbar;
     c.Label.String = 'Log2(NormalizedRatios)';
-    print([folder '/' name '/' name '_Imputed_Sorted'],'-dpng');
+    print([folder '/' name '/' name '_DIMA_Imputed_Sorted'],'-dpng');
 end
