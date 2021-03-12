@@ -7,7 +7,7 @@
 %
 % Example:
 % out = LearnPattern(O);
-% O = GetComplete(O);
+% O = ConstructReferenceData(O);
 % O = AssignPattern(O,out);
 
 function out = LearnPattern(O,bio)
@@ -19,6 +19,9 @@ if ~exist('bio','var')
     bio = [];
 end
 
+if ~any(any(isnan(O)))
+    error('LearnPattern.m: No MV found. Check your data. Does imputation make sense? Maybe replace 0s by nan.')
+end
 drin = sum(isnan(O),2)<size(O,2);
 O = O(drin,:);
 
@@ -49,7 +52,7 @@ for i=1:nboot  % subsample proteins
         ind = indrand( nperboot*(i-1)+1 : nperboot*i );
     end
     
-    [X,y,typ,typnames] = GetDesign(O(ind,:),out,bio);
+    [X,y,typ,typnames] = ConstructDesignMatrix(O(ind,:),out,bio);
     if i==1 || length(typ)+1>length(out.type)
         out.type = [0; typ]; % offset gets type=0
         out.typenames = ['offset'; typnames];

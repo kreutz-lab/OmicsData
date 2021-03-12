@@ -13,26 +13,44 @@
 % O = OmicsFilter(O);
 % O = OmicsFilter(O,[],[],'median');
 
-function O = OmicsFilter(O)
+function O = OmicsFilter(O,nacut,logflag,scaleflag)
 
+%% Remember data from file
 dat_load = get(O,'data');
 O = set(O,'data_load',[]);              % Put in container, so always keeps size
 O = set(O,'data_load',dat_load,'data from file');
 
-if exists('nacut','var') && ~isempty(nacut)
+%% delete experiments with all nan
+O = O(:,~all(isnan(O)));    
+
+%% if no NA: 0 -> NA
+if ~checknan(O)                                  % no nans in data, so write zeros as nans
+    dat = get(O,'data');                          
+    dat(dat==0) = nan;  
+    O = set(O,'data',dat,'Replaced 0 by nan.');
+end
+
+
+%% Nacut
+if exist('nacut','var') && ~isempty(nacut)
     if isnumeric(nacut)
         if nacut>1
-            O = O(sum(isnan(O),2)>=nacut,:);
-        elseif (0<=nacut) && (nacut<=1)
-            O = O(sum(isnan(O),2)>=nacut*size(O,2),:);
+            O = O(sum(isnan(O),2)<nacut,:);
+        elseif (nacut<1) && (nacut>0)
+            O = O(sum(isnan(O),2)<nacut*size(O,2),:);
         else
-            warning(['OmicsFilter: nacut ' nacut ' not known. Expand code here. No transformation performed.'])
+            warning(['OmicsFilter: nacut ' num2str(nacut) ' not known. Expand code here. No transformation performed.'])
         end
     else
         warning(['OmicsFilter: nacut ' nacut ' not known. Expand code here. No transformation performed.'])
     end
 end
-if exists('logflag','var') && ~isempty(logflag)
+
+%% Logflag
+if ~exist('logflag') || isempty(logflag)
+    logflag = 'auto';
+end
+if exist('logflag','var') && ~isempty(logflag)
     switch logflag
         case {'true','log2'}
             O = log2(O);
@@ -46,7 +64,9 @@ if exists('logflag','var') && ~isempty(logflag)
             warning(['OmicsFilter: logflag ' logflag ' not known. Expand code here. No transformation is performed.'])
     end
 end
-if exists('scaleflag','var') && ~isempty(scaleflag)
+
+%% Scaleflag
+if exist('scaleflag','var') && ~isempty(scaleflag)
     switch scaleflag
         case {'true','median'}
             O = (O - nanmedian(O)) ./ nanstd(O);
@@ -56,11 +76,3 @@ if exists('scaleflag','var') && ~isempty(scaleflag)
             warning(['OmicsFilter: scaleflag ' scaleflag ' not known. Expand code here. No transformation is performed.'])
     end
 end
-
-%% if no NA: 0 -> NA
-if ~checknan(O)                                  % no nans in data, so write zeros as nans
-    dat = get(O,'data');                          
-    dat(dat==0) = nan;  
-    O = set(O,'data',dat,'Replaced 0 by nan.');
-end
-O = O(:,~all(isnan(O)));                      % delete columns/experiments with all nan

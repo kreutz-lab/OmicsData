@@ -1,4 +1,4 @@
-% O = impute(O,method,[lib,clean])
+% O = DoImputations(O,method,[lib,clean])
 %
 % imputes missing data of class O (if exist data_mis else data)
 % O - OmicsData class object
@@ -8,22 +8,22 @@
 %
 % Example:
 % method = {'impnorm','knn','Seq'};
-% O = impute(O,method,[],true);
+% O = DoImputations(O,method,[],true);
 %
-% See also: WriteinR to see implemented methods and libraries
+% See also: DoImputationsR to see implemented methods and libraries
 
-function O = impute(O,method,lib,clean,Rpath,Rlibpath)
+function O = DoImputations(O,method,lib,clean,Rpath,Rlibpath)
 
 if ~exist('method','var') || isempty(method)
     method = {'impSeqRob','impSeq','missForest','imputePCA','ppca','MIPCA','bpca','SVDImpute','kNNImpute','regression','aregImpute','softImpute','MinDet','amelia','SVTImpute','irmi','knn','QRILC','nipals','MinProb','rf','sample','pmm','svdImpute','norm','cart','midastouch','mean','ri'};
 elseif strcmp(method,'fast')
     methods = {'impSeqRob','impSeq','missForest','imputePCA','ppca','MIPCA','bpca','SVDImpute','kNNImpute','regression','aregImpute','softImpute','MinDet','amelia','SVTImpute','irmi','knn','QRILC','nipals','MinProb','rf','sample','pmm','svdImpute','norm','cart','midastouch','mean','ri'};
     method = methods(1:9);
-    fprintf('impute.m: fast option chosen. Checks 5 best algorithms.')
+    fprintf('Imputation.m: fast option chosen. Checks 5 best algorithms.')
 elseif isnumeric(method)
     methods = {'impSeqRob','impSeq','missForest','imputePCA','ppca','MIPCA','bpca','SVDImpute','kNNImpute','regression','aregImpute','softImpute','MinDet','amelia','SVTImpute','irmi','knn','QRILC','nipals','MinProb','rf','sample','pmm','svdImpute','norm','cart','midastouch','mean','ri'};
     method = methods(1:method);
-    fprintf(['impute.m: fast option chosen. Checks ' num2str(method) ' best algorithms.'])
+    fprintf(['Imputation.m: fast option chosen. Checks ' num2str(method) ' best algorithms.'])
 end
 
 if ~exist('lib','var') || isempty(lib)
@@ -42,7 +42,7 @@ if ~exist('lib','var') || isempty(lib)
     end
 end
 if exist('clean','var') && ~isempty(clean) && clean
-    O = imputation_clear(O);  % clear previous imputations in O, optional
+    O = ClearImputations(O);  % clear previous imputations in O, optional
 end
 
 %% Start R
@@ -75,12 +75,12 @@ time = nan(length(method),npat);
 
 %for ii=1:npat
 %    dat = data(:,:,ii);
-%    fprintf(['\n impute.m: Imputing pattern ' num2str(ii) '/' num2str(npat) ' with ' num2str(length(method)) ' algorithms..'])
+%    fprintf(['\n Imputation.m: Imputing pattern ' num2str(ii) '/' num2str(npat) ' with ' num2str(length(method)) ' algorithms..'])
 
     %% Write in R
     Rpush('dat',data);
     Rrun('dat <- dat');
-    WriteinR(lib,method,size(data));
+    DoImputationsR(lib,method,size(data));
 
     %% Loop over imputation algorithms
     for i=1:length(method)
@@ -89,7 +89,7 @@ time = nan(length(method),npat);
                 t = cputime;
                 Imptemp = Rpull(['Imp' method{i}]);
                 if isstruct(Imptemp)
-                    fprintf(['impute.m: struct2array needed for conversion of struct in ' method{i}])
+                    fprintf(['Imputation.m: struct2array needed for conversion of struct in ' method{i}])
                     %Imptemp = struct2array(Imptemp); % aregImpute transform in R
                 end
                 Imptemp = reshape(Imptemp,size(data,1),size(data,2),[]);
@@ -116,7 +116,7 @@ time = nan(length(method),npat);
                 time(i,npat) = cputime-t; 
                 fprintf(['Finished ''' method{i} '''.. '])
             catch
-                fprintf(['Imputation was not feasible. '])  
+                fprintf('Imputation was not feasible. ')  
             end   
     end
     if exist('Rwarn.txt','file')
@@ -149,7 +149,7 @@ if exist('ImpM','var') && ~isempty(ImpM)
        Imp(:,:,1:size(ImpM,3),(size(Imp,4)+1):(size(Imp,4)+size(ImpM,4))) = ImpM;
        method = [get(O,'method_imput'),method];
        if size(Imp,4)~=length(method)
-           error('impute.m: Dimensions of imputation matrix and imputation algorithms does not match. Check here!')
+           error('Imputation.m: Dimensions of imputation matrix and imputation algorithms does not match. Check here!')
        end
        time = [get(O,'time_imput');nanmean(time,2)];
     else

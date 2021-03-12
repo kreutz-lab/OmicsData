@@ -7,7 +7,7 @@
 %
 % Example:
 % out = LearnPattern(O);
-% O = GetComplete(O);
+% O = ConstructReferenceData(O);
 % O = AssignPattern(O,out);
 
 
@@ -45,7 +45,7 @@ oris = get(Os,'data_original');
 comps = get(Os,'data');
 
 % Design matrix
-X = GetDesign(Os,out,false);
+X = ConstructDesignMatrix(Os,out,false);
 
 % Initialize
 dat_patterns = nan(size(Os,1),size(Os,2),npat);

@@ -1,4 +1,4 @@
-% [full,data] = Simu_OBrien(mv,nr,nprot,nsam,file)
+% [full,data] = SimuDataOBrien(mv,nr,nprot,nsam,file)
 % Simulates data matrix for protein intensities with missing values
 %
 % nprot - number of peptides/rows
@@ -17,7 +17,7 @@
 
 
 
-function [full,data] = Simu_OBrien(mv,nr,nprot,nsam,file)
+function [full,data] = SimuDataOBrien(mv,nr,nprot,nsam,file)
 
 if ~exist('nprot','var') || isempty(nprot)
     nprot = 200;

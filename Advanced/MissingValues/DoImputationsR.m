@@ -1,4 +1,4 @@
-function var = WriteinR(lib,method,dim)
+function var = DoImputationsR(lib,method,dim)
 
 % if iscell(method{i})
 %     method{i} = method{i}{:};

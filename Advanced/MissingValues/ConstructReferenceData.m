@@ -1,17 +1,24 @@
-%  O = GetComplete(O)
+%  O = ConstructReferenceData(O,[cut])
 %
-%  delete all features with (many) MV
-%
-%  if less than 50 features have no MV, one MV per feature is allowed
-%  if less than 50 features have one MV, two MVs per feature are allowed
-%  ...
+%  take data with least #MVs
+%  enlargen data by proteins with least #MVs normalized to all proteins
 %
 %  O - @OmicsData object
+%  cut - minimum number of proteins kept for the reference data
 
-function O = GetComplete(O)
+function O = ConstructReferenceData(O,cut)
 
 if ~exist('O','var')
     error('MissingValues/GetComplete.m requires class O as input argument.')
+end
+if ~exist('cut','var') || isempty(cut)
+    cut = 0.2;
+end
+if ~isnumeric(cut) || cut<0 || cut>100
+    warning(['ConstructReferenceData.m: ' cut ' is not supported. Check here. Used cut=0.2 instead.'])
+end
+if cut>1
+    cut = cut/100;
 end
 
 % Save original
@@ -19,29 +26,22 @@ O = set(O,'data_original',[]);          % Put in container so it stays original 
 dat = get(O,'data');
 O = set(O,'data_original',dat,'Original dataset');
 
+% Count NA
 nasum = sum(isnan(dat),2);
 [~,idxnan] = sort(nasum);
 O = O(idxnan,:);
 
-%cut = 0.5;
-%cut = (size(O,1)-sum(nasum==size(dat,2)))./size(O,1).*cut;
-%idx1 = 1:floor(length(idxnan)*cut);                                     % indices till cut
-%idx2 = floor(length(idxnan)*cut)+1:size(O,1);     % indices cut to end (without all NaN rows)
+% Take data with <MV than at cut
+nacut = nasum(ceil(size(dat,1)*cut)); % #MVs at cut
+O2 = O(nasum<=nacut,:);               % all data with <MVs as at cut
+idx1 = 1:size(O2,1);
+idx2 = size(O2,1)+1:size(O,1);        % rest of the data
 
-% Take data set with least #MV, but minimal size of samples/10
-for i=1:size(dat,2)
-    if sum(sum(isnan(dat),2)<i)>size(dat,1)/5
-        idx1 = 1:sum(sum(isnan(dat),2)<i);
-        break
-    end
-end
-idx2 = idx1(end)+1:size(O,1);
-O2 = O(idx1,:);                                                         % take first cut% of dataset as it is
-
+% Take data with <MV than at cut and assign mean/std of the other proteins
 idxnew = [];
 while length(idxnew)<length(idx2)
     if length(idxnew)+length(idx1)<=length(idx2)
-        idxnew = [idxnew, idx1];
+        idxnew = [idxnew, 1:size(O,1)];
     else
         idxnew = [idxnew, randsample(length(idx1),length(idx2)-length(idxnew))'];
     end

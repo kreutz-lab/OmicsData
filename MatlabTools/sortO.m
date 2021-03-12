@@ -3,7 +3,7 @@
 
 function [O,idx] = sortO(O)
 
- [~,idx1] = sort(nanmean(O,2));
+ [~,idx1] = sort(nanmean(O,2),'descend');
  O = O(idx1,:);
  [~,idx2] = sort(sum(isnan(O),2));
  O = O(idx2,:);

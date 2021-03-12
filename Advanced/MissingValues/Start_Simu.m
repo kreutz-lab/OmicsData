@@ -31,14 +31,14 @@ for j=1:length(nr)
             % best imputation for complete data
              O = OmicsData(data,['Data/' file]);
              O = set(O,'data_complete',full);
-             O = impute(O,methods);
+             O = DoImputations(O,methods);
+             [O,algo] = EvaluatePerformance(O);
              saveO(O,[],['O_full_' num2str(k)]);
 
             % best imputation for simulated data with MNAR/MCAR
             tic
             O = OmicsData(data,['Data/' file]);
-            O = DIMA(O);
-            O = impute(O,methods,[],true);
+            O = DIMA(O,methods);
             O = set(O,'time',toc);
             saveO(O,[],['O_' num2str(k)])
         end
