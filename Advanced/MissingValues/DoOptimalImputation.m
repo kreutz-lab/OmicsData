@@ -59,6 +59,9 @@ sprintf(['Your dataset was imputed with ' algo{:} '\n'])
 %% Write txt
 path = get(O,'path');
 [folder,name] = fileparts(path);
+if isempty(folder)
+    folder = '.';
+end
 if writetxt
     newname = [name '_DIMA_Imp.txt'];
     Owrite = O;
@@ -120,6 +123,6 @@ if plt
     caxis manual
     caxis([bottom top]);
     c=colorbar;
-    c.Label.String = 'Log2(NormalizedRatios)';
+    c.Label.String = 'Log2(Intensities)';
     print([folder '/' name '/' name '_DIMA_Imputed_Sorted'],'-dpng');
 end

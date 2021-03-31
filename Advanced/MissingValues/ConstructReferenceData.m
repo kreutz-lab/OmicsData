@@ -27,8 +27,7 @@ dat = get(O,'data');
 O = set(O,'data_original',dat,'Original dataset');
 
 % Count NA
-nasum = sum(isnan(dat),2);
-[~,idxnan] = sort(nasum);
+[nasum,idxnan] = sort(sum(isnan(dat),2));
 O = O(idxnan,:);
 
 % Take data with <MV than at cut
@@ -40,8 +39,8 @@ idx2 = size(O2,1)+1:size(O,1);        % rest of the data
 % Take data with <MV than at cut and assign mean/std of the other proteins
 idxnew = [];
 while length(idxnew)<length(idx2)
-    if length(idxnew)+length(idx1)<=length(idx2)
-        idxnew = [idxnew, 1:size(O,1)];
+    if length(idxnew)+length(idx1)<length(idx2)
+        idxnew = [idxnew, idx1];
     else
         idxnew = [idxnew, randsample(length(idx1),length(idx2)-length(idxnew))'];
     end

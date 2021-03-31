@@ -61,7 +61,7 @@ ylabel('|Imputed - Original|', 'FontSize',14)
 ylim([0 6])
 legend(p2,'RMSE','Location','northwest')
 %title('Imputation error', 'FontSize',18)
-print([filepath filesep name filesep 'ImputationError'],'-djpeg','-r1000');
+print([filepath filesep name filesep 'ImputationError'],'-djpeg','-r300');
 
 %% correlation imputed vs original
 figure; set(gcf,'outerposition',[0 0 1000 1000]) 
@@ -99,7 +99,7 @@ for i=1:s(4)
     title(Rankmethod{idxplot(i)},'Interpreter','none')                    
     set(gca,'FontSize', 11)
 end
-print([filepath filesep name filesep 'ImputationDistribution'],'-dtiff','-r1000');
+print([filepath filesep name filesep 'ImputationDistribution'],'-dtiff','-r300');
 
 % Histogram
 figure
@@ -121,4 +121,4 @@ hp4 = get(gca,'Position');
 set(gca,'FontSize', 11)
 %legend({'Ori','Seq','mFo','Ame','Nor','kNN'},'Interpreter','none','Position',[hp4(1)+hp4(3)*2/3 hp4(2)+0.11 hp4(3)/2.5 hp4(3)*0.8],'FontSize',18);
 legend([{'Original'},{'Imputations'}],'Interpreter','none','FontSize',11);%,'Position',[hp4(1)+hp4(3)/2 hp4(2)+0.13 hp4(3)/2.5 hp4(3)*0.5])
-print([filepath filesep name filesep 'ImputationHistogram'],'-djpeg','-r1000');
+print([filepath filesep name filesep 'ImputationHistogram'],'-dtiff','-r300');

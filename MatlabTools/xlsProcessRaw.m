@@ -23,6 +23,11 @@ function raw = xlsProcessRaw_array(raw)
 
 ichar = find(cellfun(@ischar,raw));
 inum  = find(cellfun(@isnumeric,raw));
+try
+    D = cellfun(@str2double,raw(ichar));
+    raw(ichar(~isnan(D))) = num2cell(D(~isnan(D)));
+    ichar = ichar(isnan(D));
+end
 
 indna = strmatch('na',lower(raw(ichar)),'exact');
 for ii=1:length(indna) % replace na by NaN

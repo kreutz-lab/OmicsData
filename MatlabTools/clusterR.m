@@ -94,6 +94,9 @@ if(size(O,1)>2)
     if(isempty(gn))
         gn = get(O,'IDs');        
     end
+    if isempty(gn)
+        gn = 1:size(O,1);
+    end
     Rpush('IDs',gn);
 	Rpush('data',dat);
 		
@@ -104,7 +107,7 @@ if(size(O,1)>2)
     Rrun('datum     <- format(Sys.time(), "%b%d-%Y")');
 	% Rrun('memory.limit(size=10000)')
 % 	try
-        Rrun('IDs <- t(IDs)')
+       % Rrun('IDs <- t(IDs)')
        % Rrun('	anzbreaks <- 100	')        
         Rrun('	potenz <- 1/3	')
     	Rrun('minChipData <- min(data,na.rm=TRUE)')

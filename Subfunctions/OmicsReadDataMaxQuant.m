@@ -13,17 +13,17 @@ end
 %% This block reads the file and produces depending on the file structure the variables
 % dat, labels1 (row names), labels2 (column names)
 switch ext
-    case {'','.xls','.xlsx'}
+    case {'','.xls','.xlsx','.csv'}
 %         ssds = spreadsheetDatastore(file)        
         fprintf('Reading excel file %s ... \n',file);
         [~,sheets] = xlsfinfo(file);
-        if iscell(sheets) && length(sheets)>1
-            fprintf('The data contains several sheets. Please select the right sheet [Type in a number]!\n');
-            isheet = OmicsInputSelection(sheets, 'Which sheet contains the data? ', 'int');
-            sheet = sheets{isheet};
-        else 
+       % if iscell(sheets) && length(sheets)>1
+       %     fprintf('The data contains several sheets. Please select the right sheet [Type in a number]!\n');
+       %     isheet = OmicsInputSelection(sheets, 'Which sheet contains the data? ', 'int');
+       %     sheet = sheets{isheet};
+       % else 
             sheet = sheets{1};
-        end
+       % end
         [~,~,raw] = xlsread(file,sheet);  % NaN are returned as numeric
         
         raw = xlsProcessRaw(raw);
@@ -88,6 +88,7 @@ colnames = struct;
 
 for i=1:size(dat,2)
     fn = str2fieldname(labels2{i});
+    fn = erase(fn,'newline');
     data.(fn) = dat(:,i);
     colnames.(fn) = labels2{i};
 end

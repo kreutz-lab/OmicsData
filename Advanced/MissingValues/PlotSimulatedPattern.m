@@ -8,7 +8,7 @@ dat_imp = get(O,'data_imput',true);
 if ~isempty(dat_imp)
     m = get(O,'method_imput');
     Rm = get(O,'RankMethod');
-    idximp = find(strcmp(Rm(8),m));
+    idximp = find(strcmp(Rm(1),m));
 end
 
 % Save directory
@@ -68,7 +68,7 @@ for b=1%size(dat_mis,3)
     shading flat;
     caxis manual
     caxis([mi ma]);
-    title({'original data O'})
+    title({'Original data'})
     ylabel('Proteins (sorted)')
     xlabel('Samples')
     set(gca, 'ydir', 'reverse');
@@ -84,7 +84,7 @@ for b=1%size(dat_mis,3)
    % c = colorbar('southoutside');
    % c.Label.String = 'log_{2}(Intensity)';
    % h2.Position = [h2.Position(1) h1.Position(2)+h1.Position(4)*(1-size(comp,1)/size(dat,1)) h2.Position(3) h1.Position(4)/size(dat,1)*size(comp,1)];
-    title({'Known data K'})
+    title({'Reference data'})
     xlabel('Samples')
     set(gca, 'ydir', 'reverse');
     %ylim([0 size(comp,1)])
@@ -100,7 +100,7 @@ for b=1%size(dat_mis,3)
     caxis([mi ma]);
     % h3.Position = [h3.Position(1) h1.Position(2) h3.Position(3) h1.Position(4)];
     %h3.Position = [h3.Position(1) h2.Position(2) h3.Position(3) h2.Position(4)];
-    title({'pattern simulation S'})
+    title({'Pattern simulation'})
     xlabel('Samples')
     % ylim([0 size(comp,1)])
     %yticks([0,round(size(A,1)/4,1,'significant'),round(size(A,1)/2,1,'significant'),round(size(A,1)*0.9,2,'significant')])
@@ -122,7 +122,7 @@ for b=1%size(dat_mis,3)
         xlabel('Samples')
         set(gca,'FontSize', 12)
     end
-    print(gcf,[filepath filesep name filesep strrep(name,'.','') '_SimulatedMissingPattern' num2str(b) '_middle'],'-dpng','-r1000')
+    print(gcf,[filepath filesep name filesep strrep(name,'.','') '_SimulatedMissingPattern' num2str(b)],'-dpng','-r300')
 
     misori = sum(sum(isnan(dat)))/size(dat,1)/size(dat,2)
     miscomp = sum(sum(isnan(comp)))/size(comp,1)/size(comp,2)

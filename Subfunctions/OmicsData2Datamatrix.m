@@ -36,6 +36,14 @@ if isempty(ind)
     pattern = 'Int';
     ind = find(~cellfun(@isempty,regexp(fndata,pattern,'Match','ignorecase')));
 end
+if isempty(ind)
+    pattern = 'Sample';
+    ind = find(~cellfun(@isempty,regexp(fndata,pattern,'Match','ignorecase')));
+end
+if isempty(ind)
+    pattern = 'raw';
+    ind = find(~cellfun(@isempty,regexp(fndata,pattern,'Match','ignorecase')));
+end
 if any(strcmp(fndata,pattern)) % remove column Intensity because it has other meaning in MaxQuant
     ind(ind==find(strcmp(fndata,pattern))) = []; %{[fndata{strcmp(fndata,pattern)} '_0']};
 end
@@ -43,9 +51,7 @@ while isempty(ind)
     warning('Cannot determine sample names be replacing pattern ''%s''. The data might be SILAC. Alter code be introducing a new pattern.',pattern);
     fprintf('Column names in the file:\n');
     fprintf('  %s\n',fndata{:});
-    while isempty(pattern)
-        pattern = input('>Please specify a search pattern used by regexp(...,''ignorecase''): ','s');
-    end
+    pattern = input('>Please specify a search pattern used by regexp(...,''ignorecase''): ','s');
     ind = find(~cellfun(@isempty,regexp(fndata,pattern,'Match','ignorecase')));
     if any(strcmp(fndata,pattern)) % remove column Intensity because it has other meaning in MaxQuant
         ind(ind==find(strcmp(fndata,pattern))) = []; %{[fndata{strcmp(fndata,pattern)} '_0']};
