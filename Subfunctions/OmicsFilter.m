@@ -4,7 +4,7 @@
 % conversion of 0 to NaN and deletion of all(isnan()) is applied
 %
 % O - @OmicsData object
-% nacut - threshold of maximum number of NA [0]
+% nacut - minimum number of measured data points [2]
 % logflag - should logarithmic be applied [auto] (true,log2,log10)
 % scaleflag - should normalization be applied [] (true,median,mean)
 %
@@ -32,22 +32,23 @@ end
 
 
 %% Nacut
-if exist('nacut','var') && ~isempty(nacut)
-    if isnumeric(nacut)
-        if nacut>1
-            O = O(sum(isnan(O),2)<nacut,:);
-        elseif (nacut<1) && (nacut>0)
-            O = O(sum(isnan(O),2)<nacut*size(O,2),:);
-        else
-            warning(['OmicsFilter: nacut ' num2str(nacut) ' not known. Expand code here. No transformation performed.'])
-        end
-    else
-        warning(['OmicsFilter: nacut ' nacut ' not known. Expand code here. No transformation performed.'])
-    end
+if ~exist('nacut','var') || isempty(nacut)
+	nacut = 2;
+end
+if isnumeric(nacut)
+	if nacut>=1
+		O = O(sum(~isnan(O),2)>nacut,:);
+	elseif (nacut<1) && (nacut>0)
+		O = O(sum(~isnan(O),2)>nacut*size(O,2),:);
+	else
+		warning(['OmicsFilter: nacut ' num2str(nacut) ' not known. Expand code here. No transformation performed.'])
+	end
+else
+	warning(['OmicsFilter: nacut ' nacut ' not known. Expand code here. No transformation performed.'])
 end
 
 %% Logflag
-if ~exist('logflag') || isempty(logflag)
+if ~exist('logflag','var') || isempty(logflag)
     logflag = 'auto';
 end
 if exist('logflag','var') && ~isempty(logflag)
