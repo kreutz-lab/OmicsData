@@ -4,8 +4,8 @@
 %   colnames        struct with different column-names
 
 function [data, rownames, colnames] = OmicsReadDataMaxQuant(file)
-%%
-[pfad,name,ext] = fileparts(file);
+
+[~,~,ext] = fileparts(file);
 if isempty(ext)
     fprintf('No file extension specified, assuming xls/xlsx ...\n');
 end
@@ -53,53 +53,74 @@ switch ext
         end
         fprintf('\n');
         raw = [ds.VariableNames;raw];
+    case '.tsv'
+        fprintf('Reading tsv file %s ... \n',file)
+        data = tdfread(file);
+        fns = fieldnames(data);
+        for i = 1:length(fns)
+            if ischar(data.(fns{i}))
+                data.(fns{i}) = regexprep(string(data.(fns{i})),' ','');
+            end
+            if isstring(data.(fns{i}))
+                try
+                    data.(fns{i}) = str2double(regexprep(data.(fns{i}),'"',''));
+                end
+            end
+        end
+        rownames = struct;
+        colnames = fns;
         
     otherwise
         error('The function is not yet implemented for filetype %s.',ext)
 end
 
 % at this point, the variable "raw" is a cell matrix containing numbers or
-% text.b
+% text, OR tsv reads in struct directly and raw does not exist
+if ~exist('data','var') || isempty(data) 
+    % Now checkt, which columns contain only numbers:
+    isnum = cellfun(@isnumeric,raw);
+    isdat1 = sum(isnum,2)>1;      % which rows (for filtering 1st dimension) are data (not only text)?
+    istxt2 = sum(isnum,1)==0;     % which columns (for filtering 2nd dimension) is text (no data)?
+    isdat2 = false(1,size(raw,2));% which columns (for filtering 2nd dimension) are data (conversion feasible)?
+    fprintf('Check into column of numbers ')
+    for i=1:size(raw,2)
+        fprintf('.')
+        try
+            tmp = cell2mat(raw(isdat1,i));  % check whether conversion to numbers is feasible
+            if isnumeric(tmp)
+                isdat2(i) = true;
+            end
+        end
+    end
 
-% Now checkt, which columns contain only numbers:
-isnum = cellfun(@isnumeric,raw);
-isdat1 = sum(isnum,2)>1;      % which rows (for filtering 1st dimension) are data (not only text)?
-istxt2 = sum(isnum,1)==0;     % which columns (for filtering 2nd dimension) is text (no data)?
-isdat2 = false(1,size(raw,2));% which columns (for filtering 2nd dimension) are data (conversion feasible)?
-fprintf('Check into column of numbers ')
-for i=1:size(raw,2)
-    fprintf('.')
-    try
-        tmp = cell2mat(raw(isdat1,i));  % check whether conversion to numbers is feasible
-        if isnumeric(tmp)
-            isdat2(i) = true;
+    dat = cell2mat(raw(isdat1,isdat2));
+    labels1 = raw(isdat1,istxt2);       % rownames
+    if sum(isnum(3,:))>sum(isnum(2,:))
+        labels2 = raw(2,isdat2);
+        txtlabels = raw(2,istxt2);
+    else
+        labels2 = raw(1,isdat2);            % colnames
+        txtlabels = raw(1,istxt2);
+    end
+
+    data = struct;
+    rownames = struct;
+    colnames = struct;
+
+    for i=1:size(dat,2)
+        fn = str2fieldname(labels2{i});
+        fn = erase(fn,char(10));
+        data.(fn) = dat(:,i);
+        colnames.(fn) = labels2{i};
+    end
+
+    for i=1:size(labels1,2)
+        if ~isempty(txtlabels{i})
+            fn = str2fieldname(txtlabels{i});
+            rownames.(fn) = labels1(:,i);   
         end
     end
 end
-
-dat = cell2mat(raw(isdat1,isdat2));
-labels1 = raw(isdat1,istxt2);       % rownames
-labels2 = raw(1,isdat2);            % colnames
-txtlabels = raw(1,istxt2);
-
-data = struct;
-rownames = struct;
-colnames = struct;
-
-for i=1:size(dat,2)
-    fn = str2fieldname(labels2{i});
-    fn = erase(fn,'newline');
-    data.(fn) = dat(:,i);
-    colnames.(fn) = labels2{i};
-end
-
-for i=1:size(labels1,2)
-    if ~isempty(txtlabels{i})
-        fn = str2fieldname(txtlabels{i});
-        rownames.(fn) = labels1(:,i);   
-    end
-end
-
 
 
 % This function tries to convert strings to numbers,
