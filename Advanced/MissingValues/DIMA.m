@@ -23,13 +23,17 @@ if ~exist('npat','var')
     npat = [];
 end
 
-%% DIMA
+O = OmicsFilter(O);
+
+%% Pattern generation
 out = LearnPattern(O,bio);
 O2 = ConstructReferenceData(O);
 O2 = AssignPattern(O2,out,npat);
 
+%% Imputations
 O2 = DoImputations(O2,methods);
 [O2,algo] = EvaluatePerformance(O2);
 saveO(O2,[],'O_imputations');
 
+%% Original imputation
 O = DoOptimalImputation(O,algo(1)); 

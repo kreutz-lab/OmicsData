@@ -98,7 +98,7 @@ if plt
     caxis([bottom top]);
     c=colorbar;
     c.Label.String = 'Log2(NormalizedRatios)';
-    print([folder '/' name '/' name '_DIMA_Imputed'],'-dpng','-r50');
+    print([folder '/' name '/' regexprep(name,'.','') '_DIMA_Imputed'],'-dpng','-r50');
 
     %% Sort/plot (for #nans)
     [~,idx] = sort(sum(isnan(dat_load),2));
@@ -124,5 +124,5 @@ if plt
     caxis([bottom top]);
     c=colorbar;
     c.Label.String = 'Log2(Intensities)';
-    print([folder '/' name '/' name '_DIMA_Imputed_Sorted'],'-dpng');
+    print([folder '/' name '/' regexprep(name,'.','') '_DIMA_Imputed_Sorted'],'-dpng');
 end
