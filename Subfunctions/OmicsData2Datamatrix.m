@@ -9,11 +9,16 @@
 %               the individual samples
 
 
-function [dataMat, rownames,colnames,default_data] = OmicsData2Datamatrix(data,rownames,pattern)
+function [dataMat, rownames,colnames,default_data] = OmicsData2Datamatrix(data,rownames,patternin)
 
 
 %% go for pattern search in fieldnames
 fndata = fieldnames(data)';  % should be a row
+if iscell(patternin) && length(patternin)>1
+    pattern = patternin{1};
+else
+    pattern = patternin;
+end
 
 if ~exist('pattern','var') || isempty(pattern)
     pattern = 'LFQIntensity';
@@ -143,6 +148,20 @@ colnames = cellfun(@(c)[pattern c],snames,'uni',false);   % sample names are the
 
 fnMat = fieldnames(dataMat);
 default_data = fnMat{~cellfun(@isempty,regexp(fnMat,pattern,'ignorecase'))};
+
+if iscell(patternin) && length(patternin)>1 && isfield(dataMat,patternin{1}) && isfield(dataMat,patternin{2})
+    data = struct;
+    data.([patternin{1} 'AND' patternin{2}]) = [dataMat.(patternin{1}),dataMat.(patternin{2})];
+    dataMat = data;
+    ind = find(~cellfun(@isempty,regexp(fndata,patternin{2},'Match','ignorecase')));
+    snames2 = cell(size(ind));
+    for i=1:length(ind)
+        snames2{i} = regexprep(fndata{ind(i)},patternin{2},'','ignorecase');
+    end
+    snames2 = snames2(rf);
+    colnames = [colnames, cellfun(@(c)[patternin{2} c],snames2,'uni',false)];
+    default_data = [patternin{1} 'AND' patternin{2}];
+end
 
 
 
