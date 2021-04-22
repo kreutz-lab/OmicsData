@@ -6,15 +6,28 @@ Matlab library of methods for analyzing high-throughput data
 - Add the repository file path to your Matlab search path (e.g. by addpath.m)
 
 
-## Example usage
+## Examples
+
+An OmicsData object is created by `O = OmicsData(file);` where .txt, .xls, .xlsx, .csv and .mat files as well as a numeric input are accepted, e.g. the MaxQuant output tables can serve as file inputs here. Example data can be found in OmicsData/TestData.
 ```
 OmicsInit
 O = OmicsData('proteinGroups.txt');
 O = log2(O);
 image(O)
 ```
-An OmicsData object is created by `O = OmicsData(file);` where .txt, .xls, .xlsx, .csv and .mat files as well as a numeric input are accepted, e.g. the MaxQuant output tables can serve as file inputs here. 
-Example data can be found in OmicsData/TestData.
+
+```
+OmicsInit
+O = OmicsData('proteinGroups.txt');
+O = OmicsFilter(O,0.8,'log2');
+O = DIMA(O);
+```
+
+```
+OmicsInit
+O = OmicsData('YEAST-Data-NonNormalized.csv',[],[],'yeast');     % PXD002099
+O = DIMA(O,'fast');
+```
 
 ## Methods
 
