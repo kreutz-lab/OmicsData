@@ -1,5 +1,5 @@
 # OmicsData
-Matlab library of methods for analyzing high-throughput data
+Matlab library of methods for analyzing high-throughput data. See also the [OmicsData Wiki](https://github.com/kreutz-lab/OmicsData/wiki).
 
 ## Installation
 - Clone or download repository
@@ -8,7 +8,7 @@ Matlab library of methods for analyzing high-throughput data
 
 ## Examples
 
-An OmicsData object is created by `O = OmicsData(file);` where .txt, .xls, .xlsx, .csv and .mat files as well as a numeric input are accepted, e.g. the MaxQuant output tables can serve as file inputs here. Example data can be found in OmicsData/TestData.
+An OmicsData object is created by `O = OmicsData(file);` where .txt, .xls, .xlsx, .csv and .mat files as well as a numeric input are accepted, e.g. the MaxQuant output tables can serve as file inputs here. Example data can be found in the folder TestData.
 ```
 OmicsInit
 O = OmicsData('proteinGroups.txt');
