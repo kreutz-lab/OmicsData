@@ -36,4 +36,4 @@ Some methods published from our group can be applied via:
 - `O = OmicsMbqnMatlab(O);` Brombacher E, Schad A, Kreutz C. Tail-Robust Quantile Normalization. Proteomics. 2020;20(24). doi: 10.1002/pmic.202000068.
 - `O = gsri(isnan(O));` Gehring J, Kreutz C, Bartholomé K and Timmer J. Introduction to the GSRI package : Estimating Regulatory Effects utilizing the Gene Set Regulation Index. 2013.
 
-The OmicsData library includes an R function interface Rcall which executes R commands via command line. If R functunationalities like `O = limma(O);` are used in the OmicsData tools, a proper R version has to be installed. (https://github.com/kreutz-lab/Rcall/wiki)
+The OmicsData library includes an R function interface Rcall which executes R commands via command line. If R functunationalities like `O = limma(O);` are used in the OmicsData tools, a proper R version has to be installed. For further information, see the [Rcall Wiki](https://github.com/kreutz-lab/Rcall/wiki).
