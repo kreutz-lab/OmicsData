@@ -11,7 +11,7 @@
 % O = OmicsFilter(O);
 % O = DIMA(O);
 
-function [O,out] = DIMA(O,methods,npat,bio)
+function [O,out] = DIMA(O,methods,npat,bio,Rpath,Rlibpath)
 
 if ~exist('methods','var')
     methods = [];
@@ -31,7 +31,7 @@ O2 = ConstructReferenceData(O);
 O2 = AssignPattern(O2,out,npat);
 
 %% Imputations
-O2 = DoImputations(O2,methods);
+O2 = DoImputations(O2,methods,[],[],Rpath,Rlibpath);
 [O2,algo] = EvaluatePerformance(O2);
 saveO(O2,[],'O_imputations');
 

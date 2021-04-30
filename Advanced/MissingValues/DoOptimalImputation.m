@@ -14,7 +14,7 @@
 % O = EvaluatePerformance(Oimp);
 % O = DoOptimalImputation(O,algos); 
 
-function O = DoOptimalImputation(O,algos,writetxt,plt)
+function O = DoOptimalImputation(O,algos,writetxt,plt,Rpath,Rlibpath)
 
 if ~isa(O,'OmicsData')
     O = OmicsData(O);
@@ -31,16 +31,16 @@ end
 if ~exist('plt','var') || isempty(plt)
     plt = true;
 end
-    
+ 
 O = OmicsFilter(O);
 dat_load = get(O,'data'); % for plotting
 
 %% Impute original dataset
-O = DoImputations(O,algos{1});
+O = DoImputations(O,algos{1},[],[],Rpath,Rlibpath);
 if ~isfield(O,'data_imput') && length(algos)>1
-    O = DoImputations(O,algos{2},[],true);
+    O = DoImputations(O,algos{2},[],true,Rpath,Rlibpath);
     if ~isfield(O,'data_imput')
-        O = DoImputations(O,algos{3},[],true);
+        O = DoImputations(O,algos{3},[],true,Rpath,Rlibpath);
     end
 end
 if ~isfield(O,'data_imput')
