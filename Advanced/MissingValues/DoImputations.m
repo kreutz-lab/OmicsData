@@ -27,18 +27,10 @@ elseif isnumeric(method)
 end
 
 if ~exist('lib','var') || isempty(lib)
-    lib = cell(length(method),0);
-    if ~iscell(method)
-        method  = {method};
-    end
-    c=0;
-    for i=1:length(method)
-        try
-            lib{i-c} = GetLib(method(i-c));
-        catch
-            method(i-c) = [];
-            c=c+1;
-        end
+    lib = GetLib(method);
+    if any(cellfun(@isempty,lib))
+        method(cellfun(@isempty,lib)) = [];
+        lib(cellfun(@isempty,lib)) = [];
     end
 end
 if exist('clean','var') && ~isempty(clean) && clean
