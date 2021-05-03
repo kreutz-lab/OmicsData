@@ -31,7 +31,12 @@ end
 if ~exist('plt','var') || isempty(plt)
     plt = true;
 end
- 
+if ~exist('Rpath','var') || isempty(Rpath)
+    Rpath = [];
+end
+if ~exist('Rlibpath','var') || isempty(Rlibpath)
+    Rlibpath = [];
+end
 O = OmicsFilter(O);
 dat_load = get(O,'data'); % for plotting
 
@@ -79,6 +84,14 @@ if plt
     % Limits for colorbar
     bottom = min(quantile(dat(:),0.01),quantile(dat_load(:),0.01));
     top  = max(quantile(dat(:),0.99),quantile(dat_load(:),0.99));
+    
+    % Sort mean/na
+    [~,idx] = sort(mean(dat_load,2),'descend','MissingPlacement','last');
+    dat = dat(idx,:);
+    dat_load = dat_load(idx,:);
+    [~,idx2] = sort(sum(isnan(dat_load),2));
+    dat = dat(idx2,:);
+    dat_load = dat_load(idx2,:);
 
     figure; %set(gcf,'units','points','position',[10,10,600,300])
     subplot(1,2,1)

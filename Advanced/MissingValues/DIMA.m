@@ -36,4 +36,4 @@ O2 = DoImputations(O2,methods,[],[],Rpath,Rlibpath);
 saveO(O2,[],'O_imputations');
 
 %% Original imputation
-O = DoOptimalImputation(O,algo(1)); 
+O = DoOptimalImputation(O,algo,[],[],Rpath,Rlibpath); 

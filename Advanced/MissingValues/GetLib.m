@@ -68,3 +68,6 @@ for i=1:n
         lib = libr;
     end
 end
+if ~iscell(lib)
+    lib = {lib};
+end

@@ -25,6 +25,9 @@ elseif isnumeric(method)
     method = methods(1:method);
     fprintf(['Imputation.m: fast option chosen. Checks ' num2str(method) ' best algorithms.'])
 end
+if ~iscell(method)
+    method = {method};
+end
 
 if ~exist('lib','var') || isempty(lib)
     lib = GetLib(method);
