@@ -4,7 +4,7 @@
 % conversion of 0 to NaN and deletion of all(isnan()) is applied
 %
 % O - @OmicsData object
-% nacut - minimum number of measured data points [2]
+% nacut - minimum number of measured data points [3]
 % logflag - should logarithmic be applied [auto] (true,log2,log10)
 % scaleflag - should normalization be applied [] (true,median,mean)
 %
@@ -37,9 +37,9 @@ if ~exist('nacut','var') || isempty(nacut)
 end
 if isnumeric(nacut)
 	if nacut>=1
-		O = O(sum(~isnan(O),2)>nacut,:);
+		O = O(sum(~isnan(O),2)>=nacut,:);
 	elseif (nacut<1) && (nacut>0)
-		O = O(sum(~isnan(O),2)>nacut*size(O,2),:);
+		O = O(sum(~isnan(O),2)>=nacut*size(O,2),:);
 	else
 		warning(['OmicsFilter: nacut ' num2str(nacut) ' not known. Expand code here. No transformation performed.'])
 	end
