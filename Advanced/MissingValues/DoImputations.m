@@ -19,7 +19,7 @@ if ~exist('method','var') || isempty(method)
 elseif strcmp(method,'fast')
     methods = {'impSeqRob','impSeq','missForest','imputePCA','ppca','MIPCA','bpca','SVDImpute','kNNImpute','regression','aregImpute','softImpute','MinDet','amelia','SVTImpute','irmi','knn','QRILC','nipals','MinProb','rf','sample','pmm','svdImpute','norm','cart','midastouch','mean','ri'};
     method = methods(1:9);
-    fprintf('Imputation.m: fast option chosen. Checks 5 best algorithms.')
+    fprintf('Imputation.m: fast option chosen. Checks 9 best algorithms.')
 elseif isnumeric(method)
     methods = {'impSeqRob','impSeq','missForest','imputePCA','ppca','MIPCA','bpca','SVDImpute','kNNImpute','regression','aregImpute','softImpute','MinDet','amelia','SVTImpute','irmi','knn','QRILC','nipals','MinProb','rf','sample','pmm','svdImpute','norm','cart','midastouch','mean','ri'};
     method = methods(1:method);

@@ -25,6 +25,9 @@ dat_just_imp = dat_imp .* dat_mis;                % JUST imputed data
 
 % Get path
 path = get(O,'path');
+if isempty(path)
+    path = pwd;
+end
 [filepath,name] = fileparts(path);
 
 % Get method & RMSE

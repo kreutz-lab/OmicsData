@@ -11,6 +11,9 @@ function saveO(O,file,matname)
 
 if ~exist('file','var') || isempty(file)
     file = get(O,'path');
+    if isempty(file)
+        file = pwd;
+    end
 end
 if ~exist('matname','var') || isempty(matname)
     matname = 'O';

@@ -22,6 +22,12 @@ end
 if ~exist('npat','var')
     npat = [];
 end
+if ~exist('Rpath','var')
+    Rpath = [];
+end
+if ~exist('Rlibpath','var')
+    Rlibpath = [];
+end
 
 O = OmicsFilter(O);
 
