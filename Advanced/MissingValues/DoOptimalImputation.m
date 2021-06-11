@@ -42,10 +42,13 @@ dat_load = get(O,'data'); % for plotting
 
 %% Impute original dataset
 O = DoImputations(O,algos{1},[],[],Rpath,Rlibpath);
+sprintf(['Your dataset was imputed with ' algos{1} '\n'])
 if ~isfield(O,'data_imput') && length(algos)>1
     O = DoImputations(O,algos{2},[],true,Rpath,Rlibpath);
+    sprintf(['Your dataset was imputed with ' algos{2} '\n'])
     if ~isfield(O,'data_imput')
         O = DoImputations(O,algos{3},[],true,Rpath,Rlibpath);
+        sprintf(['Your dataset was imputed with ' algos{3} '\n'])
     end
 end
 if ~isfield(O,'data_imput')
@@ -59,7 +62,6 @@ O = set(O,'data',dat,['Imputed with ' algo{:} ]);
 O = set(O,'algorithm',algo{:});
 O = set(O,'DIMA',algo(1));
 saveO(O,[],'O_DIMA')
-sprintf(['Your dataset was imputed with ' algo{:} '\n'])
 
 %% Write txt
 path = get(O,'path');
@@ -72,7 +74,7 @@ if writetxt
     Owrite = O;
     Owrite = set(Owrite,'data',dat,['Imputed with ' algo ]);
     WriteData(Owrite,[folder filesep newname]);
-    fprintf('%s%s','The imputed dataset was unlogged and written in ', [folder filesep newname])
+    fprintf('%s%s\n','The imputed dataset was unlogged and written in ', [folder filesep newname])
 end
 
 %% PLOT
@@ -82,8 +84,8 @@ if plt
     end
 
     % Limits for colorbar
-    bottom = min(quantile(dat(:),0.01),quantile(dat_load(:),0.01));
-    top  = max(quantile(dat(:),0.99),quantile(dat_load(:),0.99));
+    bottom = min(quantile(dat_load(:),0.01)); %quantile(dat(:),0.01)
+    top  = max(quantile(dat_load(:),0.99)); %quantile(dat(:),0.99)
     
     % Sort mean/na
     [~,idx] = sort(mean(dat_load,2),'descend','MissingPlacement','last');
@@ -93,25 +95,25 @@ if plt
     dat = dat(idx2,:);
     dat_load = dat_load(idx2,:);
 
-    figure; %set(gcf,'units','points','position',[10,10,600,300])
-    subplot(1,2,1)
-    b = imagesc(dat_load);
-    set(b,'AlphaData',~isnan(dat_load))
-    caxis manual
-    caxis([bottom top]);
-    title('Original data')
-    ylabel('features')
-    xlabel('Samples')
-    subplot(1,2,2)
-    b = imagesc(dat);
-    set(b,'AlphaData',~isnan(dat))
-    title(['Imputed data with ' algo])
-    xlabel('Samples')
-    caxis manual
-    caxis([bottom top]);
-    c=colorbar;
-    c.Label.String = 'Log2(NormalizedRatios)';
-    print([folder '/' name '/' regexprep(name,'.','') '_DIMA_Imputed'],'-dpng','-r50');
+%     figure; %set(gcf,'units','points','position',[10,10,600,300])
+%     subplot(1,2,1)
+%     b = imagesc(dat_load);
+%     set(b,'AlphaData',~isnan(dat_load))
+%     caxis manual
+%     caxis([bottom top]);
+%     title('Original data')
+%     ylabel('features')
+%     xlabel('Samples')
+%     subplot(1,2,2)
+%     b = imagesc(dat);
+%     set(b,'AlphaData',~isnan(dat))
+%     title(['Imputed data with ' algo])
+%     xlabel('Samples')
+%     caxis manual
+%     caxis([bottom top]);
+%     c=colorbar;
+%     c.Label.String = 'Log2(NormalizedRatios)';
+%     print([folder '/' name '/' regexprep(name,'.','') '_DIMA_Imputed'],'-dpng','-r50');
 
     %% Sort/plot (for #nans)
     [~,idx] = sort(sum(isnan(dat_load),2));
@@ -127,6 +129,8 @@ if plt
     title('Original data')
     ylabel('features')
     xlabel('Samples')
+    xticks([])
+    yticks([])
     subplot(1,2,2)
     b = imagesc(dat);
     set(b,'AlphaData',~isnan(dat))
@@ -135,7 +139,10 @@ if plt
     xlabel('Samples')
     caxis manual
     caxis([bottom top]);
-    c=colorbar;
-    c.Label.String = 'Log2(Intensities)';
+    colormap(winter)
+    xticks([])
+    yticks([])
+    %c=colorbar;
+    %c.Label.String = 'Log2(Intensities)';
     print([folder '/' name '/' regexprep(name,'.','') '_DIMA_Imputed_Sorted'],'-dpng');
 end

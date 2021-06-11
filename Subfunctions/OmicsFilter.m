@@ -33,12 +33,12 @@ end
 
 %% Nacut
 if ~exist('nacut','var') || isempty(nacut)
-	nacut = 2;
+	nacut = 0;
 end
 if isnumeric(nacut)
 	if nacut>=1
 		O = O(sum(~isnan(O),2)>=nacut,:);
-	elseif (nacut<1) && (nacut>0)
+	elseif (nacut<1) && (nacut>=0)
 		O = O(sum(~isnan(O),2)>=nacut*size(O,2),:);
 	else
 		warning(['OmicsFilter: nacut ' num2str(nacut) ' not known. Expand code here. No transformation performed.'])
