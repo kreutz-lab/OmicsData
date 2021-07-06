@@ -65,3 +65,8 @@ for i=1:length(fncol)
         end
     end
 end
+
+%% config
+if ~isfield(O.config,'default_data_name')
+    O.config.default_data_name = '';
+end

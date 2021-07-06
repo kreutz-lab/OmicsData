@@ -8,6 +8,7 @@
 %   nbin    the number of boxes, i.e. the number of bins for the medians
 % 
 %   option  x-values, e.g. 'mean', 'median'
+%           If a number is provided, then it it interpreted as quantile in [0,1]
 % 
 % See also OmicsBoxplotMeanMissings
 
@@ -16,17 +17,23 @@ if ~exist('nbin','var') || isempty(nbin)
     nbin = 20;
 end
 if ~exist('option','var') || isempty(option)
-    option = 'median';
+    option = 'median';    
 end
 
-switch(option)
-    case 'median'        
-        x = nanmedian(O,2);
-    case 'mean'        
-        x = nanmean(O,2);
-    otherwise
-%         error('Option %s unknown.',option);
-        x = get(O,option);
+if isnumeric(option)
+    x = quantile(get(O,'data'),option,2);
+    ylab = sprintf('%d %s percentile',option*100,'%');
+else     
+    ylab = option;
+    switch(option)
+        case 'median'
+            x = nanmedian(O,2);
+        case 'mean'
+            x = nanmean(O,2);
+        otherwise
+            %         error('Option %s unknown.',option);
+            x = get(O,option);
+    end
 end
 
 antna = sum(isnan(O),2)./get(O,'ns');
@@ -47,7 +54,7 @@ end
 
 boxplot(antna2matrix,'labels',binnames,'labelorientation','inline');
 set(gca,'YGrid','on','LineWidth',1.5,'FontSize',9);
-xlabel(option)
+xlabel(ylab)
 ylabel('isnan');
 title(strrep(get(O,'name'),'_','\_'));
 

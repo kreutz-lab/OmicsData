@@ -6,6 +6,7 @@
 %               OR 
 %           the type of change, e.g.
 %           'na'    The fraction of missing values is added
+%           '0'    The fraction of zero values is added
 % 
 %   newname     the new colname (used as fieldname)
 %               Default: 
@@ -49,6 +50,15 @@ elseif ischar(option) % a string indicating an option
             end
             if isempty(newname)
                 newname = [get(O,'default_row'),'_NA'];
+            end
+        case {'0'}
+            new = get(O,'snames');
+            ant0 = sum(get(O,'data')==0,1)/get(O,'nf');
+            for i=1:length(new)
+                new{i} = [new{i},' ',sprintf('%.0f%s 0',100*ant0(i)),'%'];
+            end
+            if isempty(newname)
+                newname = [get(O,'default_row'),'_0'];
             end
         otherwise
             error('option "%s" not implemented',option)

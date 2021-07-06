@@ -36,7 +36,7 @@ for i=1:size(dat,2)
     subplot(subx,suby,i)
     hist(dat(indplot,i),varargin{:});    
     if i==(suby*(subx-1)+1)
-        xlabel(str2label(get(O,'default_data')),'FontSize',fs);
+        xlabel(str2label(get(O,'default_data_name')),'FontSize',fs);
         ylabel('number of features','FontSize',fs);
     end
     title(str2label(snames{i}),'FontSize',fs);

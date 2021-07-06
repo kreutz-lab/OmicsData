@@ -13,7 +13,8 @@ O.cols = struct;            % annotation as columns (info for features)
 O.config = OmicsConfigStruct;       % Configuration parameters
 O.config.default_col = 'ProteinIDs';        % default field of annotation in the column format
 O.config.default_row = 'SampleNames';       % default field of annotation in the row format
-O.config.default_data = 'LFQIntensity';     % default field of annotation in the matrix format
+O.config.default_data = 'Data';     % default field of annotation in the matrix format
+O.config.default_data_name = 'Intensity/Counts';
 
 O.container = struct;       % for additional info
 O.data = struct;            % data in the format nfeatures x nsamples

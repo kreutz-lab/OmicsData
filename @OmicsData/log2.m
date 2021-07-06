@@ -9,7 +9,7 @@ dat = get(O,'data');
 if sum(dat(:)<0)>0
     warning('OmicsData/log2.m: Data has negative numbers, log2-transformation is refused.');
 else
-    
+    dat = double(dat);
     dat = log2(dat);
     dat(isinf(dat)) = NaN;
     

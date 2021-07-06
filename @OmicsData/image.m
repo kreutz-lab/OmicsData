@@ -78,5 +78,5 @@ if resizeFig
     set(gcf,'Position',[500  100  700  700])
 end
 
-title(str2label(get(O,'default_data')));
+title(str2label(get(O,'default_data_name')));
 
