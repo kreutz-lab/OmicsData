@@ -26,7 +26,7 @@ switch S.type
             for i=1:length(fn)
                 O.data.(fn{i}) = subsref(O.data.(fn{i}),S);
             end
-            
+                        
             Stmp = S;
             Stmp.subs{1} = 1;
             fn = fieldnames(O.rows);

@@ -17,7 +17,9 @@ O.config.default_data = 'Data';     % default field of annotation in the matrix 
 O.config.default_data_name = 'Intensity/Counts';
 
 O.container = struct;       % for additional info
+O.container.didLog = 0;
 O.data = struct;            % data in the format nfeatures x nsamples
+O.data.Data = [];
 
 O.ID   = [];    % used as an Identifier which should be altered whenever the data is changed
 

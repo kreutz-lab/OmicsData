@@ -46,6 +46,8 @@ elseif(isstruct(file_or_data)) % Conversion of struct to @OmicsData
     % This is important if the class field changes and old structs should
     % be converted to new ones (by a proper function).
     Ostruct = file_or_data;
+    Ostruct.data.wasZero = Ostruct.data.Data==0;
+    Ostruct.data.wasNaN = isnan(Ostruct.data.Data);
     try
         O = class(Ostruct,'OmicsData');   %
     catch ERR
@@ -116,6 +118,8 @@ else  % filename for reading
         O.config.default_data = default_data;
     end
     
+    O.data.wasZero = O.data.Data==0;
+    O.data.wasNaN = isnan(O.data.Data);
     O = class(O,'OmicsData');
     
 end

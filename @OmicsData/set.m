@@ -20,6 +20,9 @@ switch lower(prop)
         if isempty(varargin)
             error('Data can only be altered, if the change is annotated via a 3rd argument of this function (Example: set(O,''data'',d,''Data is divided by two.'').')
         end
+        if islogical(val)
+            warning('data is logical. Conversion to double recommended.')
+        end
         O.data.(O.config.default_data) = val;
         O = OmicsAddAnalysis(O,varargin{1});  % 3rd argument has
         O = OmicsNewID(O);

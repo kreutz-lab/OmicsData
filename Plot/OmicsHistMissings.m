@@ -1,5 +1,5 @@
 % OmicsHistMissings(O)
-% OmicsHistMissings(O,dim)
+% OmicsHistMissings(O,dim,file)
 % 
 %   This function plots a histogram of the fraction of missing values 
 % 
@@ -10,9 +10,12 @@
 % OmicsHistMissings(O)
 % OmicsHistMissings(O,2)
 
-function OmicsHistMissings(O,dim)
+function OmicsHistMissings(O,dim,file)
 if ~exist('dim','var') || isempty(dim)
     dim = 1;
+end
+if ~exist('file','var')
+    file = '';
 end
 
 if sum(sum(isnan(O)))==0
@@ -28,7 +31,7 @@ if sum(sum(isnan(O)))==0
         error('Only dim=1 and dim=2 implemented.')
     end
 else
-    xlab = 'Missing Fraction';
+    xlab = 'Fraction of missing features';
     if dim==1
         hist(sum(isnan(O))/get(O,'nf'),100);
         ylab = '# Samples';
@@ -43,3 +46,8 @@ xlabel(xlab)
 ylabel(ylab);
 title('Frequency of Missing Values');
 
+if ~isempty(file)
+    set(gcf,'Position',[488.0000  238.2000  791.4000  523.8000]);
+    set(gca,'FontSize',16)
+    print(gcf,file,'-dpng');
+end

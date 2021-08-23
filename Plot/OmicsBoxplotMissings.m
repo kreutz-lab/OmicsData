@@ -22,7 +22,7 @@ end
 
 if isnumeric(option)
     x = quantile(get(O,'data'),option,2);
-    ylab = sprintf('%d %s percentile',option*100,'%');
+    xlab = sprintf('%d %s percentile',option*100,'%');
 else     
     ylab = option;
     switch(option)
@@ -39,7 +39,7 @@ end
 antna = sum(isnan(O),2)./get(O,'ns');
 
 [m2,rf] = sort(x);
-antna2 = antna(rf); % sorted according to x
+antna2 = antna(rf)*100; % sorted according to x
 anzProBin = ceil(length(x)/nbin);
 antna2matrix = NaN(anzProBin,nbin);
 
@@ -54,7 +54,7 @@ end
 
 boxplot(antna2matrix,'labels',binnames,'labelorientation','inline');
 set(gca,'YGrid','on','LineWidth',1.5,'FontSize',9);
-xlabel(ylab)
-ylabel('isnan');
+xlabel(xlab)
+ylabel('isnan [%]');
 title(strrep(get(O,'name'),'_','\_'));
 

@@ -17,6 +17,10 @@
 %               weights for averaging beteen observed variance and
 %               variance prior.
 %               priorweight=0 coincides with unregularized regression
+% 
+% Example:
+% [p1,t,fold,varest,stats] = regress(O,X);
+% p = regress_reg(O,X,nanmedian(varest),0.5);
 
 function [p,t,fold,varest,foldSE] = regress_reg(O,X,varprior,priorw)
 % varprior = median(varprior);

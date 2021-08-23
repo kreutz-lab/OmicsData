@@ -61,6 +61,7 @@ for v=1:length(Os)
         
         [inb,locb] = ismember(r1,r2);
         if sum(inb==0)>0
+            r1(inb==0)
             error('Some default-rows does not occur in all objects.')
         else
             % reorder 2nd object

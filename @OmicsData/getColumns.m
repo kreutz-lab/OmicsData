@@ -13,7 +13,7 @@ switch format
             if iscell(cols.(colnames{f}))
                 colvals(:,f) = cols.(colnames{f});
             elseif isnumeric(cols.(colnames{f}))
-                colvals(:,f) = num2strArray(cols.(colnames{f}));
+                colvals(:,f) = strrep(num2strArray(cols.(colnames{f}),[],'%f'),'.',',');
             end
         end
 end

@@ -13,4 +13,5 @@ else
     dat(isinf(dat)) = NaN;
     
     O = set(O,'data',dat,'log10-transformation');
+    O = set(O,'didLog',1);
 end

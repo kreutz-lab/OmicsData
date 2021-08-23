@@ -40,7 +40,13 @@ fclose(fid);
 
 system(sprintf('%s CMD BATCH --vanilla --slave "%s%sgetRdata.R"',OPENR.Rexe,pwd,filesep));
 
-a = load('getRdata.mat');
+try
+    a = load('getRdata.mat');
+catch
+    warning('Error: Maybe there is a file getRdata.mat.tmp from unfinished call: Please delete it!')
+    rethrow(lasterr)
+end
+
 if ~isstruct(a)
     val = a;
 else
