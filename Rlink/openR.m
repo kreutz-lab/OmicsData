@@ -11,46 +11,48 @@
 %   OPENR.myLibPath = '/home/ck96/R_library'
 
 function openR
-global OPENR
-OPENR = struct;
 
-if exist(['C:' filesep 'Program Files' filesep 'R'],'dir')
-    version = dir(['C:' filesep 'Program Files' filesep 'R' filesep]);
-    if exist(['C:' filesep 'Program Files' filesep 'R' filesep version(end).name filesep 'bin' filesep 'x64'],'dir')
-        OPENR.Rexe = ['"C:' filesep 'Program Files' filesep 'R' filesep version(end).name filesep 'bin' filesep 'x64' filesep 'R.exe"'];
-    elseif exist(['C:' filesep 'Program Files' filesep 'R' filesep version(end).name filesep 'bin' filesep 'i386'],'dir')
-        OPENR.Rexe = ['"C:' filesep 'Program Files' filesep 'R' filesep version(end).name filesep 'bin' filesep 'i386' filesep 'R.exe"'];
-    else
-        error('OmicsData/Rlink/openR.m: Change your home directory of R here. You can find the directory by R.home() in R.')
-    end
-elseif exist('/usr/bin/R')==2 % eg knechte
-    OPENR.Rexe = '/usr/bin/R'; 
-    OPENR.myLibPath = '~/R_library';
-elseif exist('R_libs','dir') || exist('R_library','dir') % eg bwcluster
-    OPENR.Rexe = 'R'; 
-    OPENR.myLibPath = 'R_libs';
-elseif exist('../../R_libs','dir') || exist('../../R_library','dir') % eg bwcluster
-    OPENR.Rexe = 'R'; 
-    OPENR.myLibPath = '../../R_libs';
-elseif exist([filesep 'usr' filesep 'local' filesep 'lib' filesep 'R'],'dir')
-    if exist([filesep 'usr' filesep 'local' filesep 'lib' filesep 'R' filesep 'bin' filesep 'R.exe'],'dir')
-        OPENR.Rexe = ['"' filesep 'usr' filesep 'local' filesep 'lib' filesep 'R' filesep 'bin' filesep 'R.exe"'];
-    elseif exist([filesep 'usr' filesep 'local' filesep 'lib' filesep 'R' filesep 'Rscript.exe'],'dir')
-        OPENR.Rexe = ['"' filesep 'usr' filesep 'local' filesep 'lib' filesep 'R' filesep 'Rscript.exe"']; 
-    else
-        error('OmicsData/Rlink/openR.m: Change your home directory of R here. You can find the directory by R.home() in R.')
-    end
-    OPENR.myLibPath = '~/R_library';
-else
-    error('OmicsData/Rlink/openR.m: Change your home directory of R here. You can find the directory by R.home() in R.')
-end
-OPENR.libraries = {'R.matlab','amap'};
-
-%% create empty workspaces
-save putRdata
-save putRdata_cellstr
-
-warning('off','MATLAB:DELETE:FileNotFound');
-delete('getRdata.mat')
-warning('on','MATLAB:DELETE:FileNotFound');
-
+Rinit
+% global OPENR
+% OPENR = struct;
+% 
+% if exist(['C:' filesep 'Program Files' filesep 'R'],'dir')
+%     version = dir(['C:' filesep 'Program Files' filesep 'R' filesep]);
+%     if exist(['C:' filesep 'Program Files' filesep 'R' filesep version(end).name filesep 'bin' filesep 'x64'],'dir')
+%         OPENR.Rexe = ['"C:' filesep 'Program Files' filesep 'R' filesep version(end).name filesep 'bin' filesep 'x64' filesep 'R.exe"'];
+%     elseif exist(['C:' filesep 'Program Files' filesep 'R' filesep version(end).name filesep 'bin' filesep 'i386'],'dir')
+%         OPENR.Rexe = ['"C:' filesep 'Program Files' filesep 'R' filesep version(end).name filesep 'bin' filesep 'i386' filesep 'R.exe"'];
+%     else
+%         error('OmicsData/Rlink/openR.m: Change your home directory of R here. You can find the directory by R.home() in R.')
+%     end
+% elseif exist('/usr/bin/R')==2 % eg knechte
+%     OPENR.Rexe = '/usr/bin/R'; 
+%     OPENR.myLibPath = '~/R_library';
+% elseif exist('R_libs','dir') || exist('R_library','dir') % eg bwcluster
+%     OPENR.Rexe = 'R'; 
+%     OPENR.myLibPath = 'R_libs';
+% elseif exist('../../R_libs','dir') || exist('../../R_library','dir') % eg bwcluster
+%     OPENR.Rexe = 'R'; 
+%     OPENR.myLibPath = '../../R_libs';
+% elseif exist([filesep 'usr' filesep 'local' filesep 'lib' filesep 'R'],'dir')
+%     if exist([filesep 'usr' filesep 'local' filesep 'lib' filesep 'R' filesep 'bin' filesep 'R.exe'],'dir')
+%         OPENR.Rexe = ['"' filesep 'usr' filesep 'local' filesep 'lib' filesep 'R' filesep 'bin' filesep 'R.exe"'];
+%     elseif exist([filesep 'usr' filesep 'local' filesep 'lib' filesep 'R' filesep 'Rscript.exe'],'dir')
+%         OPENR.Rexe = ['"' filesep 'usr' filesep 'local' filesep 'lib' filesep 'R' filesep 'Rscript.exe"']; 
+%     else
+%         error('OmicsData/Rlink/openR.m: Change your home directory of R here. You can find the directory by R.home() in R.')
+%     end
+%     OPENR.myLibPath = '~/R_library';
+% else
+%     error('OmicsData/Rlink/openR.m: Change your home directory of R here. You can find the directory by R.home() in R.')
+% end
+% OPENR.libraries = {'R.matlab','amap'};
+% 
+% %% create empty workspaces
+% save putRdata
+% save putRdata_cellstr
+% 
+% warning('off','MATLAB:DELETE:FileNotFound');
+% delete('getRdata.mat')
+% warning('on','MATLAB:DELETE:FileNotFound');
+% 

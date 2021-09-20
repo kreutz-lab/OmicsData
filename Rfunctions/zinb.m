@@ -107,7 +107,7 @@ if ~isempty(iuse)
     res.coefZeros(iuse,:) = getRdata('coef0');
 end
 
-% closeR
+closeR
 
 res.formula = formula;
 res.iuse = iuse;
