@@ -40,8 +40,8 @@ Some methods published from our group can be applied via:
 
 ## Rcall
 The OmicsData library includes an R interface 'Rcall' which executes R commands via command line. If R functunationalities like `O = limma(O);` are used in the OmicsData tools, include the submodule:
-´´´
+```
 git submodule init
 git submodule update
-´´´
+```
 For further information see the [Rcall Wiki](https://github.com/kreutz-lab/Rcall/wiki).
