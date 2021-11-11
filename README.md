@@ -45,3 +45,11 @@ git submodule init
 git submodule update
 ```
 For further information see the [Rcall Wiki](https://github.com/kreutz-lab/Rcall/wiki).
+
+## Author
+Clemens Kreutz and Janine Egert
+Institute of Medical Biometry and Statistics, 
+Faculty of Medicine and Medical Center – University of Freiburg, Germany
+https://www.uniklinik-freiburg.de/imbi-en/msb.html
+ckreutz at imbi.uni-freiburg.de
+egert at imbi.uni-freiburg.de
