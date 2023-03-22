@@ -17,6 +17,10 @@ elseif minN<1 % interpreted as a fraction
 end
 
 dat = get(O,'data');
+if sum(isnan(dat(:))==0)
+    warning('OmicsRemoveEmptyFeatures.m: No NaN, treat 0 as NaN.')
+    dat(dat==0) = NaN;
+end
 drin = find(sum(~isnan(dat) & ~isinf(dat),2)>=minN);
 
 O = O(drin,:);

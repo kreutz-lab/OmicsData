@@ -19,8 +19,9 @@ if ~exist('file','var')
 end
 
 if sum(sum(isnan(O)))==0
-    warning('No NaN in data, zeros are plotted instead')
-    xlab = 'Fraction of zeros';
+    warning('No NaN in data, zeros are plotted instead.')
+    xlab = 'Proportion of zeros';
+    tit = 'Frequency of zeros over samples';
     if dim==1
         hist(sum(get(O,'data')==0)/get(O,'nf'),100);
         ylab = '# Samples';
@@ -31,7 +32,8 @@ if sum(sum(isnan(O)))==0
         error('Only dim=1 and dim=2 implemented.')
     end
 else
-    xlab = 'Fraction of missing features';
+    xlab = 'Proportion of missing features';
+    tit = 'Frequency of missing values over samples';
     if dim==1
         hist(sum(isnan(O))/get(O,'nf'),100);
         ylab = '# Samples';
@@ -44,7 +46,7 @@ else
 end
 xlabel(xlab)
 ylabel(ylab);
-title('Frequency of Missing Values');
+title(tit);
 
 if ~isempty(file)
     set(gcf,'Position',[488.0000  238.2000  791.4000  523.8000]);

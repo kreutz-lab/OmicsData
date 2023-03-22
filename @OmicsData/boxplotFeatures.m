@@ -7,13 +7,14 @@
 % 
 % The code can be extended by providing faktor as a variable.
 % This faktor controls the postion in vertical direction of the labels.
+% 
+% Example:
+%     boxplotFeatures(Otmp,X,xnames,[],accountStructZero,'Notch','on')
 
-function boxplotFeatures(O,X,xnames,file,accountCoefZero,varargin)
+function xcombi=boxplotFeatures(O,X,xnames,file,accountCoefZero,varargin)
 % if ~exist('xtick','var')
 %     xtick = false;
 % end
-
-xuni = unique(X(:,1));
 
 if ~exist('file','var') || isempty(file)
     file = '';
@@ -25,37 +26,47 @@ if ~exist('accountCoefZero','var')
     accountCoefZero = 0;
 end
 
+% xuni = unique(X(:,1));
+% 
+% labels = cell(size(xuni));
+% for i=1:length(xuni)
+%     labels{i} = [xnames{1},'=',num2str(xuni(i))];
+% end
 
-labels = cell(size(xuni));
-for i=1:length(xuni)
-    labels{i} = [xnames{1},'=',num2str(xuni(i))];
-end
+xcombi = Xcombinations(X,xnames);
+labels = unique(xcombi);
 
 dat = get(O,'data');
 fnames  = str2label(get(O,'fnames'));
 nf = get(O,'nf');
 
-faktor = 1;
 % Proper font size
 if nf<10
     fs = 10;
-    pos = [500   438   560   420]; 
 elseif nf<=20
     fs = 9;
-    pos = [500   438   750   420];
 elseif nf<=50
     fs = 7;
-    faktor = 0.9;
-    pos = [500   438   850   420];
 elseif nf <=70
-    faktor = 0.8;
     fs = 6;
-    pos = [500   438   950   420];
-else % more than 60
-    faktor = 0.7;
+else % more than 70
     fs = 5;
-    pos = [100   438   1600   420];
 end
+
+labelsShort = cell(size(labels));
+for i=1:length(labels)
+    labelsShort{i} = labels{i}(1:min(3,length(labels{i})));
+end
+
+nletters = max(celllength(labels));
+if nletters<6
+    fsTick = 9;
+elseif nletters<10 % more than 60
+    fsTick = 7;
+else
+    fsTick = 5;
+end
+
 if accountCoefZero
     dat = accountStructZero(O,dat);
 end
@@ -71,15 +82,41 @@ subx = ceil(dim1^0.6);
 suby = ceil(dim1/subx);
 
 for i=1:size(dat,1)
-    datplot = NaN(dim2,length(xuni));
-    for j=1:length(xuni)
-        ind = find(X(:,1)==xuni(j));
+    datplot = NaN(dim2,length(labels));
+    N0 = zeros(1,length(labels));
+    for j=1:length(labels)
+%         ind = find(X(:,1)==xuni(j));
+        ind = strmatch(labels{j},xcombi,'exact');
         datplot(1:length(ind),j) = dat(i,ind)';
+        N0(j) = sum(isnan(dat(i,ind)))/length(ind)*100;
     end
+    
     subplot(suby,subx,i);
     set(gca,'YGrid','on','LineWidth',1.5,'FontSize',fs);
     hold on
-    boxplot(datplot,'labels',labels,'labelorientation','inline',varargin{:});
+    boxplot(datplot,'labels',labelsShort,'labelorientation','inline',varargin{:});
+    f = findobj(gca,'type','text');
+    % sort objects according to x-position:
+    xpos = NaN(size(f));
+    for ii=1:length(f)
+        tmp = get(f(ii),'Position');
+        xpos(ii) = tmp(1);
+    end
+    [~,RF] = sort(xpos);
+    f = f(RF);
+    for ii=1:length(f)
+        set(f(ii),'FontSize',fsTick,'String',labels{ii});
+    end
+    yl = ylim;
+    ytext = yl(1)+0.95*diff(yl);
+    if subx*suby<=16
+        fs = 6;
+    else
+        fs = 5;
+    end
+    for j=1:length(N0)
+        text(j+.1,ytext,[num2str(round(N0(j))),'%NA'],'FontSize',fs);
+    end
     set(gca,'YGrid','on','LineWidth',1.5,'FontSize',fs);
 % if xtick
 %     set(gca,'XTick',1:size(O,2),'XGrid','on');
@@ -96,7 +133,7 @@ for i=1:size(dat,1)
 
 %     xlabel('sample','FontSize',10);
 %     ylabel(str2label(get(O,'default_data')),'FontSize',10);
-    title(fnames{i},'FontSize',fs)
+    title(OmicsRenameLabels(fnames{i}),'FontSize',fs)
     % set(gcf,'Position',pos);
 end
 

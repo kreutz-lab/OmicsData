@@ -58,6 +58,49 @@ else
                 
                 warning('on','stats:regress:RankDefDesignMat');
                 
+            case {'LM_ranks'} % LM on ranks, NaN are kept, mean and SD same
+                dat = get(O,'data');
+                for ii=1:size(dat,1)
+                    indna = find(isnan(dat(ii,:)));
+                    m = nanmean(dat(ii,:));
+                    sd = nanstd(dat(ii,:));
+                    dat(ii,:) = rankasgn_fast(dat(ii,:));
+                    dat(ii,indna) = NaN;
+                    dat(ii,:) = (dat(ii,:)-m)./sd;
+                end
+                Orank = set(O,'data',dat,'RanktransformationSameMeanSD');
+                [res.p{i},~,res.fold{i},res.varest{i},res.foldSE{i}] = regress(Orank,res.X{i});
+                
+                res.mean{i} = nanmean(O,2);
+                
+                use = ~isnan(res.varest{i}) & ~isinf(res.varest{i}) & res.varest{i}>1e-10;
+                res.varestS{i} = NaN(size(res.varest{i}));
+                res.varestS{i}(use) = smooth(res.mean{i}(use),sqrt(res.varest{i}(use)),1000,'lowess').^2;
+                [~,iu] = unique(res.mean{i}(use));
+                [~,iu2] = unique(res.mean{i}(~use));
+                x = res.mean{i}(use);
+                y = res.varestS{i}(use);
+                xx = res.mean{i}(~use);
+                tmp = NaN(size(xx));
+                tmp(iu2) = interp1(x(iu),sqrt(y(iu)),xx(iu2),'linear','extrap').^2;
+                res.varestS{i}(~use) = tmp;
+                
+                %% for features with less NaN, use only varest form those features:
+                lessNaN = get(O,'propna')<0.2;
+                res.varestS{i}(lessNaN) = smooth(res.mean{i}(lessNaN),sqrt(res.varest{i}(lessNaN)),1000,'lowess').^2;
+                
+                %% regularized regression
+                [res.pr{i},~,res.foldr{i},res.foldrSE{i}] = regress_reg(Orank,res.X{i},res.varestS{i},reg_strength);
+                
+                % res.fdr{i} = FdrKorrekturMitR2(res.p{i},[],1);
+                % res.fdrr{i} = FdrKorrekturMitR2(res.pr{i},[],1);
+                [~,~,~,res.fdr{i}] =fdr_bh(res.p{i});
+                [~,~,~,res.fdrr{i}]=fdr_bh(res.pr{i});
+                
+                res.label{i} = [label,', LM_ranks ',opts.Design{i},', PriorW=',num2str(reg_strength)];
+
+                warning('on','stats:regress:RankDefDesignMat');
+                
             case 'ZINB_DEseq'
                 r = OmicsZINB_DEseq(O,res.X{i},res.xnames{i},'','');
                 res.mean{i} = nanmean(O,2);

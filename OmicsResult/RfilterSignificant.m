@@ -11,7 +11,7 @@
 function R = RfilterSignificant(R,ind)
 
 
-fn = fieldnames(R.out);
+fn = setdiff(fieldnames(R.out),'out');
 fnX = setdiff(fieldnames(R.out.pr),'label');
 
 for ix=1:length(fnX)
@@ -24,6 +24,13 @@ for ix=1:length(fnX)
                 R.out.(fn{f}).(fnX{ix}) = R.out.(fn{f}).(fnX{ix})(ind,:);
             end
         end
+    end
+end
+
+if isfield(R.out,'out')
+    fn = fieldnames(R.out.out);
+    for i=1:length(fn)
+        R.out.out.(fn{i}) = R.out.out.(fn{i})(ind);
     end
 end
 

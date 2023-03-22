@@ -19,7 +19,8 @@ anastr = sprintf('@OmicsData vertcat: [%ix%i',get(O,'nf'),get(O,'ns'));
 
 r1 = O.rows.(O.config.default_row);
 if length(unique(r1)) < length(r1)
-    error('Default-row of O is not unique and cannot be used for horzcat. Generate a unique default-row first.')
+    warning('The following error might occur, if there are identical snames in one of both objects.');
+    error('default_row of O is not unique and cannot be used for horzcat. Generate a unique default-row first.')
 end
 
 doforce = 0;

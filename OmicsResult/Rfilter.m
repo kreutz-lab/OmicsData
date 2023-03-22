@@ -1,9 +1,9 @@
 % Examples:
 % res = Workflow_Regression_core(O,res);
-% 
+%
 % res2 = Rfilter(res,'label','ranksum') % only ranksum
 % res2 = WritePipelineResult(res2,'res2')
-% 
+%
 % res3 = Rfilter(res,'label','ranksum','unequal')  % everything except ranksum
 % res3 = WritePipelineResult(res3,'res3')
 
@@ -22,8 +22,13 @@ switch property
             otherwise
                 error('compareFlag=%s not implemented.',compareFlag);
         end
-                
-        fn = fieldnames(R.out);
+        
+        if isempty(ind)
+            warning('No matches with label "%s %s" not found',compareFlag,value);
+        end
+        
+        fn = setdiff(fieldnames(R.out),'out');
+        
         fnX = fieldnames(R.out.pr);
         
         for ix=1:length(fnX)
@@ -36,6 +41,8 @@ switch property
                 end
             end
         end
+        
+end
 end
 
 

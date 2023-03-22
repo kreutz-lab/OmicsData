@@ -27,18 +27,36 @@ switch S.type
                 O.data.(fn{i}) = subsref(O.data.(fn{i}),S);
             end
                         
+
             Stmp = S;
             Stmp.subs{1} = 1;
             fn = fieldnames(O.rows);
+            ncol = length(O.rows.(fn{1}));
+            
             for i=1:length(fn)
                 O.rows.(fn{i}) = subsref(O.rows.(fn{i}),Stmp);
+            end
+            
+            fn = fieldnames(O.container);
+            for i=1:length(fn)
+                if size(O.container.(fn{i}),2)==ncol
+                    O.container.(fn{i}) = subsref(O.container.(fn{i}),Stmp);
+                end
             end
             
             Stmp = S;
             Stmp.subs{2} = 1;
             fn = fieldnames(O.cols);
+            nrow = length(O.cols.(fn{1}));
             for i=1:length(fn)
                 O.cols.(fn{i}) = subsref(O.cols.(fn{i}),Stmp);
+            end
+            
+            fn = fieldnames(O.container);
+            for i=1:length(fn)
+                if size(O.container.(fn{i}),1)==nrow
+                    O.container.(fn{i}) = subsref(O.container.(fn{i}),Stmp);
+                end
             end
         else
             error('OmicsData/subsref.m: Only two-dimensional indexing implemented/feasible.')

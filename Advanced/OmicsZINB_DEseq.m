@@ -1,3 +1,19 @@
+%  Applies the ZINB model and fills results with DESEQ (for features with
+%  only one count>0 or features with no 0). 
+% 
+%   X       design matrix
+% 
+%   xnames  names of the predictors, i.e. the columns of X
+% 
+%   formulaDeseq    requires no lhs, i.e. ~predictors is appropriate
+% 
+%   formulaZINB    requires a lhs, i.e. counts~predictors is appropriate
+% 
+% Example:
+% res = OmicsZINB_DEseq(O,X,{'group'},'',''); 
+% % corresponds to:
+% res = OmicsZINB_DEseq(O,X,{'group'},'~group','counts~group | 1');
+
 function res = OmicsZINB_DEseq(O,X,xnames,formulaDeseq,formulaZINB)
 
 disp('ZINB started ...')

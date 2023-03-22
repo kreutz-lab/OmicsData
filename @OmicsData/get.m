@@ -12,6 +12,7 @@
 % get(O,'sd')       SD over samples
 % get(O,'nna')      Number of NaN for each feature, summed over the samples
 % get(O,'propna')   Proportion of NaN for each feature, summed over the samples
+% get(O,'prop0')   Proportion of 0 for each feature, summed over the samples
 
 function [varargout, structfield] = get(O,prop,silent)
 
@@ -37,6 +38,12 @@ else
             varargout = sum(isnan(get(O,'data')),2);
         case {'propna','propnan','freqna','freqnan','antna'}
             varargout = sum(isnan(get(O,'data')),2)/size(get(O,'data'),2);
+
+        case {'propna0','propnan0','freqna0','freqnan0','antna0'}
+            varargout = sum((isnan(get(O,'data')) | get(O,'data')==0),2)/size(get(O,'data'),2);
+
+        case {'prop0','freq0','ant0'}
+            varargout = sum(get(O,'data')==0,2)/size(get(O,'data'),2);
             
         case 'data'
             try

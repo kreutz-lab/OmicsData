@@ -1,4 +1,4 @@
-% OmicsBoxplotMissings(O,[nbin],[option])
+% OmicsBoxplotMissings(O,[nbin],[option],[treatZeroAsMissing])
 % 
 %   This function produces a boxplot of the proportion of missing values
 %   for the features depending on the median measurment
@@ -10,21 +10,27 @@
 %   option  x-values, e.g. 'mean', 'median'
 %           If a number is provided, then it it interpreted as quantile in [0,1]
 % 
+%   treatZeroAsMissing  [false]
+%           true: Zero is treated as missing value
+% 
 % See also OmicsBoxplotMeanMissings
 
-function OmicsBoxplotMissings(O,nbin,option)
+function OmicsBoxplotMissings(O,nbin,option,treatZeroAsMissing)
 if ~exist('nbin','var') || isempty(nbin)
     nbin = 20;
 end
 if ~exist('option','var') || isempty(option)
     option = 'median';    
 end
+if ~exist('treatZeroAsMissing','var') || isempty(treatZeroAsMissing)
+    treatZeroAsMissing = false;    
+end
 
 if isnumeric(option)
     x = quantile(get(O,'data'),option,2);
-    xlab = sprintf('%d %s percentile',option*100,'%');
+    xlab = sprintf('%d %s percentile over features',option*100,'%');
 else     
-    ylab = option;
+    xlab = [option, 'over features'];
     switch(option)
         case 'median'
             x = nanmedian(O,2);
@@ -36,7 +42,13 @@ else
     end
 end
 
-antna = sum(isnan(O),2)./get(O,'ns');
+if treatZeroAsMissing
+    antna = sum(isnan(O) | get(O,'data')==0,2) ./get(O,'ns');
+    ylab = 'isnan or zero [%]';
+else
+    antna = sum(isnan(O),2)./get(O,'ns');
+    ylab = 'isnan [%]';
+end
 
 [m2,rf] = sort(x);
 antna2 = antna(rf)*100; % sorted according to x
@@ -55,6 +67,6 @@ end
 boxplot(antna2matrix,'labels',binnames,'labelorientation','inline');
 set(gca,'YGrid','on','LineWidth',1.5,'FontSize',9);
 xlabel(xlab)
-ylabel('isnan [%]');
+ylabel(ylab);
 title(strrep(get(O,'name'),'_','\_'));
 

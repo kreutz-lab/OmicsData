@@ -9,8 +9,9 @@ end
 counts = get(O,'data');
 
 if get(O,'didLog')==1 
-    disp('2^data => use this');
+    disp('didLog==1: 2^data is used');
     counts = 2.^counts;
+    counts(get(O,'wasZero')) = 0; % reverse log2(0) = NaN
 end
 
 if size(counts,1)<=100

@@ -40,6 +40,12 @@ for i=1:length(str)
     str{i} = strrep(str{i},'[',rep);
     str{i} = strrep(str{i},'~',rep);
     str{i} = strrep(str{i},'=',rep);
+    str{i} = strrep(str{i},'ä','ae');
+    str{i} = strrep(str{i},'ö','oe');
+    str{i} = strrep(str{i},'ü','ue');
+    str{i} = strrep(str{i},'Ä','Ae');
+    str{i} = strrep(str{i},'Ö','Oe');
+    str{i} = strrep(str{i},'Ü','Ue');
     if(sum(regexp(str{i},'\d')==1)>0)
         str{i} = ['f_',str{i}];
     end

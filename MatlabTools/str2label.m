@@ -15,7 +15,7 @@ if(iscell(str))
     end    
 else        
     lab = strrep(str,'^','');
-    lab = strrep(lab,'_',' ');
+    lab = strrep(lab,'_','\_');
     lab = strrep(lab,'e-00','e-');
     lab = strrep(lab,'e-0','e-');
     lab = strrep(lab,'e+000','');
