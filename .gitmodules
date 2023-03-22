@@ -1,0 +1,3 @@
+[submodule "Rcall"]
+	path = Rcall
+	url = https://github.com/kreutz-lab/Rcall

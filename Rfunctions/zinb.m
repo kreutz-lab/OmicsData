@@ -119,7 +119,7 @@ if ~isempty(iuse)
     res.predCounts(iuse,:) = getRdata('predCounts');
 end
 
-% closeR
+closeR
 
 res.formula = formula;
 res.iuse = iuse;

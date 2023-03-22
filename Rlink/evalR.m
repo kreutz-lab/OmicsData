@@ -12,12 +12,14 @@
 
 function evalR(cmd)
 
-global OPENR
-if ~isfield(OPENR,'cmd')
-    OPENR.cmd = {cmd};
-else
-    OPENR.cmd{end+1} = cmd;
-end
+Rrun(cmd)
 
-
-
+% global OPENR
+% if ~isfield(OPENR,'cmd')
+%     OPENR.cmd = {cmd};
+% else
+%     OPENR.cmd{end+1} = cmd;
+% end
+% 
+% 
+% 

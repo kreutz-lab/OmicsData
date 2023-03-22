@@ -14,51 +14,47 @@
 %   R (e.g. via install.packages("R.matlab")
 
 function val = getRdata(varname)
-global OPENR
+%global OPENR
 
-switch(varname)
-    case 'c'
-        warning('Variable name ''c'' might not work because it has a special meaning in R')
-end
+val = Rpull(varname);
 
-evalR_writeAndExecute
-
-%% Schreibe *.Rdata in evalR und konvertiere varname und speichere varname in getRdata.mat
-fid = fopen('getRdata.R','w');
-
-fprintf(fid,'%s\n',['setwd("',strrep(pwd,filesep,'/'),'")']);
-if isfield(OPENR,'myLibPath') && ~isempty(OPENR.myLibPath) && exist(OPENR.myLibPath,'file')  
-    fprintf(fid,'%s\n',['.libPaths("',OPENR.myLibPath,'")']); % my own library
-end
-fprintf(fid,'require(R.matlab)\n');
-fprintf(fid,'rm(list=ls())\n');
-fprintf(fid,'\n');
-
-fprintf(fid,'%s\n','load("evalR.Rdata")');
-fprintf(fid,'%s\n',sprintf('writeMat("getRdata.mat",%s=%s)',varname,varname));
-fclose(fid);
-
-system(sprintf('%s CMD BATCH --vanilla --slave "%s%sgetRdata.R"',OPENR.Rexe,pwd,filesep));
-
-if exist('getRdata.mat.tmp')==2
-    delete getRdata.mat.tmp
-    disp('delete getRdata.mat.tmp')
-    pause(0.5)
-end
-    
-try
-    a = load('getRdata.mat');
-catch
-    warning('Error: Maybe there is a file getRdata.mat.tmp from unfinished call: Please delete it!')
-    rethrow(lasterr)
-end
-
-if ~isstruct(a)
-    val = a;
-else
-    if isfield(a,varname)
-        val = a.(varname);
-    else
-        error('%s does not exist.',varname);
-    end 
-end
+% switch(varname)
+%     case 'c'
+%         warning('Variable name ''c'' might not work because it has a special meaning in R')
+% end
+% 
+% evalR_writeAndExecute
+% 
+% %% Schreibe *.Rdata in evalR und konvertiere varname und speichere varname in getRdata.mat
+% fid = fopen('getRdata.R','w');
+% 
+% fprintf(fid,'%s\n',['setwd("',strrep(pwd,filesep,'/'),'")']);
+% if isfield(OPENR,'myLibPath') && ~isempty(OPENR.myLibPath) && exist(OPENR.myLibPath,'file')  
+%     fprintf(fid,'%s\n',['.libPaths("',OPENR.myLibPath,'")']); % my own library
+% end
+% fprintf(fid,'require(R.matlab)\n');
+% fprintf(fid,'rm(list=ls())\n');
+% fprintf(fid,'\n');
+% 
+% fprintf(fid,'%s\n','load("evalR.Rdata")');
+% fprintf(fid,'%s\n',sprintf('writeMat("getRdata.mat",%s=%s)',varname,varname));
+% fclose(fid);
+% 
+% system(sprintf('%s CMD BATCH --vanilla --slave "%s%sgetRdata.R"',OPENR.Rexe,pwd,filesep));
+% 
+% try
+%     a = load('getRdata.mat');
+% catch
+%     warning('Error: Maybe there is a file getRdata.mat.tmp from unfinished call: Please delete it!')
+%     rethrow(lasterr)
+% end
+% 
+% if ~isstruct(a)
+%     val = a;
+% else
+%     if isfield(a,varname)
+%         val = a.(varname);
+%     else
+%         error('%s does not exist.',varname);
+%     end 
+% end
