@@ -1,12 +1,18 @@
 % res = zinb(counts,X,xnames,formula)
 % 
 %   Zero inflated negative binomial model from the pcsl package
+% 
+% Example:
+% res = zinb(counts,[X1,X2],{'xname1','xname2'},'counts~xname1+xname2');
+
 
 function res = zinb(counts,X,xnames,formula)
 if size(counts,2)==1
     counts = counts'; % has to be a row
 end
-if size(counts,2)~=size(X,1)
+if size(counts,2)~=size(X,1) && (~isempty(counts) && ~isempty(X))
+    size(counts)
+    size(xnames)
     error('size of count matrix does not fit to design matrix X');
 end
 
@@ -82,7 +88,9 @@ evalR('pC <- matrix(nrow=dim(counts)[1],ncol=ncoef)')
 evalR('p0 <- matrix(nrow=dim(counts)[1],ncol=ncoef0)')
 evalR('coefC <- matrix(nrow=dim(counts)[1],ncol=ncoef)')
 evalR('coef0 <- matrix(nrow=dim(counts)[1],ncol=ncoef0)')
-evstr = ['for(i in 1:dim(counts)[1]){ df[["counts"]] <- counts[i,]; res <- summary(zeroinfl(',formula,',data=df)); pC[i,]<-array(res$coefficients$count[,4]); p0[i,]<-array(res$coefficients$zero[,4]); coefC[i,]<-array(res$coefficients$count[,1]); coef0[i,]<-array(res$coefficients$zero[,1]);} '];
+evalR('predZero <- NaN*counts')
+evalR('predCounts <- NaN*counts')
+evstr = ['for(i in 1:dim(counts)[1]){ df[["counts"]] <- counts[i,]; fit <- zeroinfl(',formula,',data=df); predZero[i,] = predict(fit,newdata=df,"zero"); predCounts[i,]<-predict(fit,newdata=df,"count"); res <- summary(fit); pC[i,]<-array(res$coefficients$count[,4]); p0[i,]<-array(res$coefficients$zero[,4]); coefC[i,]<-array(res$coefficients$count[,1]); coef0[i,]<-array(res$coefficients$zero[,1]);} '];
 disp(evstr)
 evalR(evstr);
 evalR('pC[is.na(pC)] <- NaN')
@@ -99,16 +107,21 @@ res.pZeros = NaN(size(counts0,1),size(p0,2));
 res.coefZeros = NaN(size(counts0,1),size(p0,2));
 res.pCounts = NaN(size(counts0,1),size(pC,2));
 res.coefCounts = NaN(size(counts0,1),size(pC,2));
+res.predZero = NaN(size(counts0,1),size(counts0,2));
+res.predCounts = NaN(size(counts0,1),size(counts0,2));
 
 if ~isempty(iuse)
     res.pZeros(iuse,:) = p0;
     res.pCounts(iuse,:) = pC;
     res.coefCounts(iuse,:) = getRdata('coefC');
     res.coefZeros(iuse,:) = getRdata('coef0');
+    res.predZero(iuse,:) = getRdata('predZero');
+    res.predCounts(iuse,:) = getRdata('predCounts');
 end
 
 % closeR
 
 res.formula = formula;
 res.iuse = iuse;
+
 

@@ -40,6 +40,12 @@ fclose(fid);
 
 system(sprintf('%s CMD BATCH --vanilla --slave "%s%sgetRdata.R"',OPENR.Rexe,pwd,filesep));
 
+if exist('getRdata.mat.tmp')==2
+    delete getRdata.mat.tmp
+    disp('delete getRdata.mat.tmp')
+    pause(0.5)
+end
+    
 try
     a = load('getRdata.mat');
 catch
