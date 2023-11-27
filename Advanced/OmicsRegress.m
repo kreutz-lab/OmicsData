@@ -60,14 +60,19 @@ else
                 
             case {'LM_ranks'} % LM on ranks, NaN are kept, mean and SD same
                 dat = get(O,'data');
+                ms = nanmean(dat,2);
+                sds = nanstd(dat,[],2);
                 for ii=1:size(dat,1)
                     indna = find(isnan(dat(ii,:)));
-                    m = nanmean(dat(ii,:));
-                    sd = nanstd(dat(ii,:));
                     dat(ii,:) = rankasgn_fast(dat(ii,:));
                     dat(ii,indna) = NaN;
-                    dat(ii,:) = (dat(ii,:)-m)./sd;
                 end
+                dat = dat-(nanmean(dat,2)*ones(1,size(dat,2))); % set mean=0 
+                dat = dat./(nanstd(dat,[],2)*ones(1,size(dat,2))); % set SD=1 
+
+                dat = dat.*(sds*ones(1,size(dat,2))); % set old SD
+                dat = dat+(ms*ones(1,size(dat,2))); % set old mean
+
                 Orank = set(O,'data',dat,'RanktransformationSameMeanSD');
                 [res.p{i},~,res.fold{i},res.varest{i},res.foldSE{i}] = regress(Orank,res.X{i});
                 
@@ -173,6 +178,9 @@ else
                 res.label{i} = [label,', ranksum (fold=gap)'];
             otherwise
                 error('model unknown')
+        end
+        try
+            save OmicsRegress_tmp resc
         end
         
     end

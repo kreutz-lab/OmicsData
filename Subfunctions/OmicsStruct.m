@@ -27,6 +27,7 @@ O.info.pwd  = pwd;
 O.info.time = datestr(now,30);   % date when the data struct was initialized
 O.info.date = date;
 O.info.path = {};
+O.config.showControls  = 1;
 
 O.name = '';    % Name of the data-set
 O.rows = struct;

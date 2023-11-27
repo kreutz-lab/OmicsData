@@ -70,6 +70,7 @@ else
     
     evalR('df[["counts"]] <- counts[1,]')
     evalR(['res <- summary(zeroinfl(',formula,',data=df))'])
+    evalR('coefnames <- row.names(res$coefficient$count)')
     evalR('ncoef <- dim(res$coefficients$count)[1]')
     evalR('ncoef0 <- dim(res$coefficients$zero)[1]')
     
@@ -80,6 +81,7 @@ else
     evstr = ['for(i in 1:dim(counts)[1]){ df[["counts"]] <- counts[i,]; res <- summary(zeroinfl(',formula,',data=df)); pC[i,]<-array(res$coefficients$count[,4]); p0[i,]<-array(res$coefficients$zero[,4]); coefC[i,]<-array(res$coefficients$count[,1]); coef0[i,]<-array(res$coefficients$zero[,1]);} '];
     disp(evstr)
     evalR(evstr);
+%     evalR('save.image("OmicsZinbPscl.Rdata")')
     
     % evalR('a <- 1');
     % res = getRdata('a')
@@ -94,12 +96,17 @@ res.pZeros = NaN(size(O,1),size(p0,2));
 res.coefZeros = NaN(size(O,1),size(p0,2));
 res.pCounts = NaN(size(O,1),size(pC,2));
 res.coefCounts = NaN(size(O,1),size(pC,2));
+res.coefNames = getRdata('coefnames');
+
+res.log2Fold = res.coefCounts/log(2);
 
 if length(iuse)>1
     res.pZeros(iuse,:) = p0;
     res.pCounts(iuse,:) = pC;
     res.coefCounts(iuse,:) = getRdata('coefC');
     res.coefZeros(iuse,:) = getRdata('coef0');
+
+    res.log2Fold = res.coefCounts/log(2);
 end
 % Todo: Reasonable calculations for features with no 0 (and only <=1 count)
 

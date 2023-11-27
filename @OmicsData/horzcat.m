@@ -63,6 +63,8 @@ for v=1:length(Os)
         [inb,locb] = ismember(c1,c2);
         if sum(inb==0)>0
             inb
+            setdiff(c1,c2)
+            setdiff(c2,c1)
             error('Some default-rows do not occur in all objects.')
         else
             % reorder 2nd object

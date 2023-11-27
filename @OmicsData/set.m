@@ -2,7 +2,8 @@
 % set(O, property, value, argument)
 % set(O, property1, value1, property2, value2, ...)
 %
-%
+% O = set(O,'showControls',0); % do not return comput. pk and nks, e.g. via
+% get(O,'data')
 
 function O = set(O,prop, val, varargin)
 
@@ -56,6 +57,9 @@ switch lower(prop)
         else
             error('size(val) does not fit.');
         end
+
+    case {'showpk','showcontrols'}
+        O.config.showControls = val;
         
     otherwise
         dims = size(val);

@@ -5,16 +5,21 @@
 %       accountCoefZero    consider get(O,'accountCoefZero') and
 %                          plot only a proper fraction of zeros
 % 
+%   makeViolinePlot     makes violineplots instead
+% 
 % The code can be extended by providing faktor as a variable.
 % This faktor controls the postion in vertical direction of the labels.
 
-function boxplot(O,file,accountCoefZero)
+function boxplot(O,file,accountCoefZero, makeViolinePlot)
 % if ~exist('xtick','var')
 %     xtick = false;
 % end
 
 if ~exist('file','var') || isempty(file)
     file = '';
+end
+if ~exist('makeViolinePlot','var') || isempty(makeViolinePlot)
+    makeViolinePlot = false;
 end
 if ~exist('accountCoefZero','var')
     accountCoefZero = 0;
@@ -49,7 +54,11 @@ if accountCoefZero
     dat = accountStructZero(O,dat);
 end
 
-boxplot(dat,'labels',snames,'labelorientation','inline');
+if makeViolinePlot
+    violinplot(dat,[],'ShowData',false);
+else
+    boxplot(dat,'labels',snames,'labelorientation','inline');
+end
 set(gca,'YGrid','on','LineWidth',1.5,'FontSize',9);
 % if xtick
 %     set(gca,'XTick',1:size(O,2),'XGrid','on');

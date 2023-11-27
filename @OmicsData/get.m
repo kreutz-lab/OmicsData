@@ -2,14 +2,14 @@
 %
 %   This function has to be used if data properties are requested.
 %
+%   If get(O,'showControls') is set to zero, then comput. positive  and
+%   negative controls (set via isPositiveControl) are not returned.
+%
 % Examples:
 % dat           = get(O,'data')
 % nsamples      = get(O,'ns')
 % nfeatures     = get(O,'nf')
 % get(O)            show fieldnames
-% get(O,'mean')     mean over samples
-% get(O,'median')   median over samples
-% get(O,'sd')       SD over samples
 % get(O,'nna')      Number of NaN for each feature, summed over the samples
 % get(O,'propna')   Proportion of NaN for each feature, summed over the samples
 % get(O,'prop0')   Proportion of 0 for each feature, summed over the samples
@@ -31,8 +31,17 @@ if nargin==1
             end
         end
     end
-    
+
 else
+%     % 1st account filter of comput positive controls:
+%     if isfield(O.config,'showControls') && ~isempty(O.config.showControls)
+%         if(~O.config.showControls && strcmpi(prop,'ispositivecontrol')~=1 && isfield(O.cols,'isPositiveControl') && ~isempty(O.cols.isPositiveControl'))
+%             S.type='()';
+%             S.subs={find(~O.cols.isPositiveControl),':'};
+%             O = subsref(O,S);
+%         end
+%     end
+
     switch lower(prop)  % misspecification of upper/lower cases is allowed in get (but not in set)
         case {'nna','nnan'}
             varargout = sum(isnan(get(O,'data')),2);
@@ -44,7 +53,7 @@ else
 
         case {'prop0','freq0','ant0'}
             varargout = sum(get(O,'data')==0,2)/size(get(O,'data'),2);
-            
+
         case 'data'
             try
                 varargout = O.data.(O.config.default_data);
@@ -54,7 +63,7 @@ else
             end
         case 'name'
             varargout = O.name;
-            
+
         case {'samplenames','snames','hy'}  % hy is accepted because of historic reasons
             try
                 varargout = O.rows.(O.config.default_row);
@@ -62,14 +71,14 @@ else
                 warning('Default row specified by O.config.default_row does not exist in O.rows. Did you change this property?')
                 rethrow(ERR)
             end
-            
+
         case 'ids'
             if isfield(O.cols,'IDs')
                 varargout = O.cols.IDs;
             else
                 varargout = get(O,'MajorityproteinIDs');
             end
-            
+
         case {'featurenames','fnames'}
             try
                 varargout = O.cols.(O.config.default_col);
@@ -77,16 +86,16 @@ else
                 warning('Default toe specified by O.config.default_col does not exist in O.cols. Did you change this property?')
                 rethrow(ERR)
             end
-            
+
         case {'nf','nfeatures','nprot','ngene','ngenes'}
             varargout = size(get(O,'data'),1);
-        case {'n','ndata'} 
+        case {'n','ndata'}
             varargout = prod(size(get(O,'data'),1)); % the result of numel is wrong for empty data
         case {'ns','nsamples','na','narrays'}
             varargout = size(get(O,'data'),2);
-            
+
         otherwise  % search field recursively
-            
+
             fn = fieldnames(O);
             [~,ia] = intersect(fn,prop);
             if length(ia)==1
@@ -111,11 +120,11 @@ else
                     if ~silent
                         warning('Property ''%s'' not found in the @OmicsData object.',prop);
                     end
-                    varargout = [];
+                    varargout = cell(0);
                 end
             end
     end
-    
+
 end
-    
-    
+
+

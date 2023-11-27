@@ -33,5 +33,30 @@ else
     lab = strrep(lab,'.700000e','.7e');
     lab = strrep(lab,'.800000e','.8e');
     lab = strrep(lab,'.900000e','.9e');
+
     lab = strtrim(lab);
+
+    if length(lab)==6
+        lab = strrep(lab,'1.5e-1','0.15');
+        lab = strrep(lab,'2.5e-1','0.25');
+        lab = strrep(lab,'3.5e-1','0.35');
+        lab = strrep(lab,'4.5e-1','0.45');
+        lab = strrep(lab,'5.5e-1','0.55');
+        lab = strrep(lab,'6.5e-1','0.65');
+        lab = strrep(lab,'7.5e-1','0.75');
+        lab = strrep(lab,'8.5e-1','0.85');
+        lab = strrep(lab,'9.5e-1','0.95');
+    end
+    if length(lab)==4
+        lab = strrep(lab,'5e-2','0.05');
+        lab = strrep(lab,'1e-1','0.1');
+        lab = strrep(lab,'2e-1','0.2');
+        lab = strrep(lab,'3e-1','0.3');
+        lab = strrep(lab,'4e-1','0.4');
+        lab = strrep(lab,'5e-1','0.5');
+        lab = strrep(lab,'6e-1','0.6');
+        lab = strrep(lab,'7e-1','0.7');
+        lab = strrep(lab,'8e-1','0.8');
+        lab = strrep(lab,'9e-1','0.9');
+    end
 end
